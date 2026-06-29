@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Зеркало</title>
+<title>Загляни в зеркало</title>
 
-<meta property="og:title"        content="Зеркало — Узнай свою настоящую суть" />
-<meta property="og:description"  content="Пройди тест из 16 вопросов и узнай, какая стихия преобладает в твоём темпераменте." />
+<meta property="og:title"        content="Загляни в зеркало" />
+<meta property="og:description"  content="Узнай, какая стихия преобладает в твоём темпераменте" />
 <meta property="og:image"        content="https://yalica.github.io/zerkalo-test/cover.png" />
 <meta property="og:type"         content="website" />
 <meta name="twitter:card"        content="summary_large_image" />
@@ -36,7 +36,7 @@
 html, body {
   width: 100%; height: 100%;
   overflow: hidden;
-  touch-action: none;
+  touch-action: manipulation;
   background-color: #000;
 }
 
@@ -136,7 +136,7 @@ html, body {
 }
 
 #mirror-btn {
-  width: clamp(320px, 45vw, 640px); display: block; cursor: pointer;
+  width: 140а%; max-width: 800px; flex-shrink: 0; display: block; cursor: pointer;
   -webkit-tap-highlight-color: transparent; touch-action: manipulation;
   pointer-events: all; position: relative; z-index: 3;
   transition: transform 0.25s ease, filter 0.25s ease;
@@ -493,8 +493,10 @@ document.getElementById('start-btn').addEventListener('click', function(e) { e.s
 var mirrorBtn   = document.getElementById('mirror-btn');
 var mirrorLabel = document.getElementById('mirror-label');
 function triggerMirror() { mirrorLabel.classList.add('hidden'); setTimeout(function() { goTo(3); }, 350); }
-mirrorBtn.addEventListener('click', function(e) { e.stopPropagation(); triggerMirror(); });
-mirrorBtn.addEventListener('touchend', function(e) { e.preventDefault(); e.stopPropagation(); triggerMirror(); });
+var mirrorFired = false;
+function fireMirror(e) { e.stopPropagation(); if (mirrorFired) return; mirrorFired = true; triggerMirror(); }
+mirrorBtn.addEventListener('pointerup', fireMirror);
+mirrorBtn.addEventListener('click', fireMirror);
 
 function recalcScores() {
   scores.choleric = scores.sanguine = scores.phlegmatic = scores.melancholic = 0;
