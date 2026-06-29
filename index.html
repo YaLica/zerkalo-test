@@ -34,23 +34,25 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  width: 100%; height: 100%;
+  width: 100%; height: 100%; height: 100dvh; /* Идеально для мобильных браузеров */
   overflow: hidden;
   touch-action: manipulation;
   background-color: #000;
 }
 
-@media (min-width: 600px) and (pointer: fine) {
+/* ДЕСКТОП И ПЛАНШЕТЫ (Прячем в рамку телефона) */
+@media (min-width: 768px) {
   body { display: flex; align-items: center; justify-content: center; background: #111; }
   .phone-frame {
-    position: relative; height: 95vh; width: calc(95vh * 9 / 16);
+    position: relative; height: 90vh; max-height: 900px; width: calc(90vh * 9 / 16); max-width: 450px;
     border-radius: 24px; overflow: hidden;
-    box-shadow: 0 0 0 8px #222, 0 30px 80px rgba(0,0,0,0.8);
+    box-shadow: 0 0 0 10px #222, 0 30px 80px rgba(0,0,0,0.8);
   }
 }
 
-@media not all and (min-width: 600px) and (pointer: fine) {
-  .phone-frame { width: 100%; height: 100%; }
+/* МОБИЛЬНЫЕ ТЕЛЕФОНЫ (На весь экран) */
+@media (max-width: 767px) {
+  .phone-frame { width: 100%; height: 100%; height: 100dvh; }
 }
 
 .carousel {
@@ -64,7 +66,6 @@ html, body {
 }
 
 .bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-
 .video-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
 
 .rules-plate-container {
@@ -73,19 +74,19 @@ html, body {
 }
 
 .rules-plate {
-  background: rgba(45, 25, 15, 0.85); padding: 30px 24px; border-radius: 16px;
+  background: rgba(45, 25, 15, 0.85); padding: clamp(20px, 4vh, 30px) 20px; border-radius: 16px;
   width: 100%; max-width: 500px; text-align: center; color: #fff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex; flex-direction: column; gap: 12px; max-height: 90vh; overflow-y: auto;
 }
 
-.rules-plate h2 { font-size: 22px; font-family: system-ui, sans-serif; margin-bottom: 8px; }
-.rules-plate p { font-size: 18px; line-height: 1.5; font-family: system-ui, sans-serif; }
+.rules-plate h2 { font-size: clamp(20px, 5vw, 26px); font-family: system-ui, sans-serif; margin-bottom: 4px; }
+.rules-plate p { font-size: clamp(14px, 4vw, 18px); line-height: 1.5; font-family: system-ui, sans-serif; }
 
 .continue-btn {
   margin-top: 15px; background: linear-gradient(135deg, #b87333, #6b3e1b);
   color: #ffffff; border: none; padding: 14px 30px;
-  font-size: 16px; font-weight: bold; border-radius: 30px;
+  font-size: clamp(14px, 4vw, 16px); font-weight: bold; border-radius: 30px;
   cursor: pointer; font-family: system-ui, sans-serif;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   transition: transform 0.1s ease, box-shadow 0.1s ease;
@@ -99,7 +100,7 @@ html, body {
 }
 
 #mirror-btn {
-  width: 140%; max-width: 800px; flex-shrink: 0; display: block; cursor: pointer;
+  width: clamp(260px, 70vw, 400px); flex-shrink: 0; display: block; cursor: pointer;
   -webkit-tap-highlight-color: transparent; touch-action: manipulation;
   pointer-events: all; position: relative; z-index: 3;
   transition: transform 0.25s ease, filter 0.25s ease;
@@ -110,7 +111,7 @@ html, body {
 .mirror-label {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, 0px);
   background: rgba(40, 15, 5, 0.45); color: #fff; text-align: center;
-  padding: 10px 16px; border-radius: 30px; font-size: 13px;
+  padding: 10px 16px; border-radius: 30px; font-size: clamp(11px, 3vw, 14px);
   letter-spacing: 2px; z-index: 10; font-family: system-ui, sans-serif;
   white-space: nowrap; pointer-events: none;
   animation: pulse-glow 2s ease-in-out infinite; transition: opacity 0.4s ease;
@@ -128,21 +129,31 @@ html, body {
 
 .question-scroll {
   position: relative; z-index: 2; width: 100%; max-width: 420px;
-  margin: 0 auto; height: 100%; overflow-y: auto; padding-bottom: 80px;
+  margin: 0 auto; height: 100%; overflow-y: auto; padding-bottom: 100px; /* УВЕЛИЧЕН ОТСТУП, ЧТОБЫ НЕ ПЕРЕКРЫВАЛА КНОПКА */
 }
 
-.card-image { width: 100%; height: 50vh; display: flex; align-items: center; justify-content: center; padding: 16px 16px 8px; }
+/* ОПТИМИЗАЦИЯ ВЫСОТЫ КАРТИНОК */
+.card-image { 
+  width: 100%; 
+  height: 35vh; /* Уменьшено с 50vh, чтобы оставить место тексту на телефонах */
+  min-height: 180px; max-height: 300px; 
+  display: flex; align-items: center; justify-content: center; padding: 16px 16px 8px; 
+}
 .card-image img { width: auto; max-width: 100%; height: 100%; object-fit: contain; }
 
-.question-plate { width: 100%; background: #4CAF50; color: #ffffff; padding: 10px 16px; border-radius: 16px; font-size: 16px; line-height: 1.5; font-family: system-ui, sans-serif; }
+.question-plate { 
+  width: calc(100% - 28px); margin: 0 auto; background: #4CAF50; color: #ffffff; 
+  padding: 10px 16px; border-radius: 16px; font-size: clamp(14px, 4vw, 16px); 
+  line-height: 1.4; font-family: system-ui, sans-serif; 
+}
 
-.answers { display: flex; flex-direction: column; gap: 8px; padding: 10px 14px; }
+.answers { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; }
 .answer-plate {
-  background: rgba(40, 20, 80, 0.75); color: #fff; padding: 10px 14px;
-  font-size: 15px; border-radius: 8px; cursor: pointer; display: flex;
-  align-items: center; justify-content: space-between; width: 100%;
+  background: rgba(40, 20, 80, 0.75); color: #fff; padding: 12px 14px;
+  font-size: clamp(13px, 3.5vw, 15px); border-radius: 8px; cursor: pointer; display: flex;
+  align-items: center; justify-content: space-between; width: 100%; min-height: 50px;
   transition: background 0.2s; user-select: none; font-family: system-ui, sans-serif;
-  -webkit-tap-highlight-color: transparent; touch-action: manipulation; line-height: 1.4;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; line-height: 1.3;
 }
 .answer-plate.selected { background: rgba(40, 120, 40, 0.85); }
 .checkmark { display: none; color: #4cff4c; font-size: 15px; flex-shrink: 0; margin-left: 8px; }
@@ -151,32 +162,33 @@ html, body {
 .next-plate, .back-plate {
   position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: rgba(60, 0, 100, 0.92); color: #fff; text-align: center;
-  padding: 10px 36px; border-radius: 30px; font-size: 13px;
+  padding: 12px 36px; border-radius: 30px; font-size: clamp(12px, 3.5vw, 14px);
   letter-spacing: 2px; cursor: pointer; z-index: 10; user-select: none;
   font-family: system-ui, sans-serif; white-space: nowrap;
   -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 .next-plate:active, .back-plate:active { opacity: 0.75; transform: translateX(-50%) scale(0.96); }
 
 #scores-table { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
 .score-row {
   display: flex; justify-content: space-between; background: rgba(255,255,255,0.1);
-  padding: 10px 18px; border-radius: 8px; color: #fff; font-size: 15px;
+  padding: 12px 18px; border-radius: 8px; color: #fff; font-size: clamp(14px, 4vw, 16px);
   font-family: system-ui, sans-serif;
 }
 
-#scores-text { color: #fff; font-size: 14px; text-align: center; line-height: 1.6; padding: 0 16px; font-family: system-ui, sans-serif; }
+#scores-text { color: #fff; font-size: clamp(13px, 4vw, 15px); text-align: center; line-height: 1.6; padding: 0 16px; font-family: system-ui, sans-serif; }
 
 #get-result-btn {
   margin-top: 20px; padding: 14px 36px; background: rgba(100, 0, 160, 0.9);
-  color: #fff; border: none; border-radius: 30px; font-size: 16px;
+  color: #fff; border: none; border-radius: 30px; font-size: clamp(14px, 4vw, 16px);
   cursor: pointer; font-family: system-ui, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
 
 .waiting-plate {
   position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: rgba(60, 0, 100, 0.92); color: #fff; text-align: center;
-  padding: 10px 36px; border-radius: 30px; font-size: 13px;
+  padding: 10px 36px; border-radius: 30px; font-size: clamp(11px, 3.5vw, 14px);
   letter-spacing: 2px; z-index: 10; font-family: system-ui, sans-serif; white-space: nowrap;
 }
 
@@ -186,7 +198,7 @@ html, body {
 }
 
 #result-text {
-  max-width: 600px; color: #fff; font-size: 15px;
+  max-width: 600px; color: #fff; font-size: clamp(14px, 4vw, 16px);
   line-height: 1.8; text-align: center; padding: 20px; font-family: system-ui, sans-serif;
   background: rgba(40, 15, 5, 0.75); border-radius: 16px; margin-bottom: 80px;
 }
@@ -194,7 +206,7 @@ html, body {
 #review-plate {
   position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
   background: rgba(60, 0, 100, 0.92); color: #fff; text-align: center;
-  padding: 10px 36px; border-radius: 30px; font-size: 13px;
+  padding: 12px 36px; border-radius: 30px; font-size: clamp(12px, 3.5vw, 14px);
   letter-spacing: 2px; cursor: pointer; z-index: 10; user-select: none;
   font-family: system-ui, sans-serif; white-space: nowrap; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
@@ -210,27 +222,27 @@ html, body {
 .review-write-box { width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
 
 #review-prompt {
-  color: #ffffff; font-size: 16px; text-align: center;
+  color: #ffffff; font-size: clamp(14px, 4vw, 16px); text-align: center;
   line-height: 1.5; font-family: system-ui, sans-serif; margin-bottom: 16px;
 }
 
 #review-name {
   width: 100%; background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 12px; color: #fff; font-size: 16px;
+  border-radius: 12px; color: #fff; font-size: 16px; /* 16px чтобы не зумило iOS */
   padding: 12px 14px; font-family: system-ui, sans-serif; outline: none; margin-bottom: 10px;
 }
 #review-name::placeholder { color: rgba(255,255,255,0.4); }
 
 #review-textarea {
   width: 100%; height: 120px; background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 12px; color: #fff; font-size: 16px; padding: 14px;
+  border-radius: 12px; color: #fff; font-size: 16px; /* 16px чтобы не зумило iOS */ padding: 14px;
   font-family: system-ui, sans-serif; resize: none; outline: none;
 }
 #review-textarea::placeholder { color: rgba(255,255,255,0.4); }
 
 #review-send-btn {
   padding: 14px 40px; margin-top: 15px; background: rgba(100, 0, 160, 0.9);
-  color: #fff; border: none; border-radius: 30px; font-size: 16px;
+  color: #fff; border: none; border-radius: 30px; font-size: clamp(14px, 4vw, 16px);
   font-weight: bold; cursor: pointer; font-family: system-ui, sans-serif;
   touch-action: manipulation; -webkit-tap-highlight-color: transparent; width: 100%;
   transition: transform 0.1s ease;
@@ -240,14 +252,14 @@ html, body {
 #go-to-reviews-btn {
   padding: 12px 30px; margin-top: 12px; background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 30px; font-size: 13px; cursor: pointer;
+  border-radius: 30px; font-size: clamp(12px, 3.5vw, 14px); cursor: pointer;
   font-family: system-ui, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   width: 100%; transition: transform 0.1s ease;
 }
 #go-to-reviews-btn:active { opacity: 0.75; transform: scale(0.96); }
 
 #review-thanks {
-  display: none; color: #4cff4c; font-size: 17px;
+  display: none; color: #4cff4c; font-size: clamp(15px, 4.5vw, 18px);
   text-align: center; margin-bottom: 20px; font-family: system-ui, sans-serif;
 }
 
@@ -266,7 +278,7 @@ html, body {
 
 .review-card { background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; text-align: left; }
 .review-author { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: system-ui, sans-serif; }
-.review-text { font-size: 14px; color: #e0e0e0; line-height: 1.5; font-family: system-ui, sans-serif; }
+.review-text { font-size: clamp(13px, 3.5vw, 15px); color: #e0e0e0; line-height: 1.5; font-family: system-ui, sans-serif; }
 </style></head>
 <body>
 
@@ -376,7 +388,7 @@ for (var i = 0; i < 16; i++) { answerQueues.push([]); }
 var scores = { choleric: 0, sanguine: 0, phlegmatic: 0, melancholic: 0 };
 var currentScreen = 0;
 var waitingTimer = null;
-var hasSeenResult = false; // НОВАЯ ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ (память)
+var hasSeenResult = false; 
 
 var DEFAULT_TEMPLATE = "Зеркало увидело в тебе уникальное сочетание граней. Ты — сложная и интересная личность, которую не уложить в рамки.";
 
@@ -416,7 +428,7 @@ function goTo(index) {
       if (currentScreen === 20) {
         document.getElementById('waiting-video').pause();
         buildResultText();
-        hasSeenResult = true; // СТАВИМ ГАЛОЧКУ, ЧТО РЕЗУЛЬТАТ УЖЕ ПОЛУЧЕН
+        hasSeenResult = true; 
         goTo(21);
       }
     }, delay);
@@ -587,21 +599,18 @@ for (var qs = 0; qs < questionScreens.length; qs++) {
   })(questionScreens[qs]);
 }
 
-// ОБНОВЛЕННАЯ КНОПКА С ПРОВЕРКОЙ ГАЛОЧКИ
 document.getElementById('get-result-btn').addEventListener('click', function() {
   if (window._emptyRun === true) { 
     goTo(3); 
     return; 
   }
-  
   if (hasSeenResult) {
-    goTo(21); // Если уже смотрел, кидаем сразу на текст
+    goTo(21); 
   } else {
-    goTo(20); // Если первый раз, показываем видео
+    goTo(20); 
   }
 });
 
-// Кнопки навигации отзывов
 document.getElementById('review-plate').addEventListener('click', function() { goTo(22); });
 document.getElementById('review-plate').addEventListener('touchend', function(e) { e.preventDefault(); goTo(22); });
 
@@ -615,7 +624,6 @@ makeSwipeable(document.getElementById('screen-23'), null, function() { goTo(22);
 makeSwipeable(document.getElementById('screen-22'), null, function() { goTo(21); });
 makeSwipeable(document.getElementById('screen-21'), null, function() { goTo(19); });
 
-// Отправка отзыва
 document.getElementById('review-send-btn').addEventListener('click', function() {
   var name = document.getElementById('review-name').value.trim();
   var text = document.getElementById('review-textarea').value.trim();
@@ -631,7 +639,6 @@ document.getElementById('review-send-btn').addEventListener('click', function() 
   document.getElementById('review-thanks').style.display = 'block';
 });
 
-// Подсчет символов
 var reviewTextarea = document.getElementById('review-textarea');
 var charProgress = document.getElementById('char-progress');
 var charCounter = document.getElementById('char-counter');
