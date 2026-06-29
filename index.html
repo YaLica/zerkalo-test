@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Зеркало</title>
+
+<link rel="preload" as="image" href="background.png">
+<link rel="preload" as="image" href="mirror_button.png">
+<link rel="preload" as="image" href="card_1.png">
+<link rel="preload" as="image" href="card_2.png">
+<link rel="preload" as="image" href="card_3.png">
+<link rel="preload" as="image" href="card_4.png">
+<link rel="preload" as="image" href="card_5.png">
+<link rel="preload" as="image" href="card_6.png">
+<link rel="preload" as="image" href="card_7.png">
+<link rel="preload" as="image" href="card_8.png">
+<link rel="preload" as="image" href="card_9.png">
+<link rel="preload" as="image" href="card_10.png">
+<link rel="preload" as="image" href="card_11.png">
+<link rel="preload" as="image" href="card_12.png">
+<link rel="preload" as="image" href="card_13.png">
+<link rel="preload" as="image" href="card_14.png">
+<link rel="preload" as="image" href="card_15.png">
+<link rel="preload" as="image" href="card_16.png">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  touch-action: none;
+  background-color: #000;
+}
+
+@media (min-width: 600px) and (pointer: fine) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111;
+  }
+  .phone-frame {
+    position: relative;
+    height: 95vh;
+    width: calc(95vh * 9 / 16);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 0 0 8px #222, 0 30px 80px rgba(0,0,0,0.8);
+  }
+}
+@media not all and (min-width: 600px) and (pointer: fine) {
+  .phone-frame { width: 100%; height: 100%; }
+}
+
+.carousel {
+  display: flex;
+  height: 100%;
+  width: 2400%;
+  transition: transform 0.4s ease;
+  will-change: transform;
+}
+
+.screen {
+  height: 100%;
+  width: calc(100% / 24);
+  flex-shrink: 0;
+  position: relative;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: fill;
+  z-index: 0;
+}
+
+.video-screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.rules-plate-container {
+  position: relative;
+  z-index: 2;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.rules-plate {
+  background: rgba(45, 25, 15, 0.85);
+  padding: 30px 24px;
+  border-radius: 16px;
+  width: 100%; max-width: 500px;
+  text-align: center; color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.rules-plate h2 { font-size: clamp(18px, 2.5vw, 32px); font-family: system-ui, sans-serif; margin-bottom: 8px; }
+.rules-plate p { font-size: clamp(13px, 1.5vw, 18px); line-height: 1.5; font-family: system-ui, sans-serif; }
+
+.continue-btn {
+  margin-top: 15px;
+  background: linear-gradient(135deg, #b87333, #6b3e1b);
+  color: #ffffff; border: none; padding: 14px 30px;
+  font-size: clamp(14px, 1.4vw, 18px); font-weight: bold; border-radius: 30px;
+  cursor: pointer; font-family: system-ui, sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  align-self: center;
+}
+.continue-btn:active { transform: scale(0.95); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); }
+
+.mirror-wrap {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 2; display: flex; align-items: center; justify-content: center;
+}
+
+#mirror-btn {
+  width: clamp(320px, 45vw, 640px); display: block; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+  pointer-events: all; position: relative; z-index: 3;
+  transition: transform 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 0 20px rgba(180,100,255,0.5));
+  user-select: none;
+}
+#mirror-btn:active { transform: scale(0.93); filter: drop-shadow(0 0 8px rgba(180,100,255,0.3)); }
+
+.mirror-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, 0px);
+  background: rgba(40, 15, 5, 0.45); color: #fff; text-align: center;
+  padding: 10px 16px; border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px);
+  letter-spacing: 2px; z-index: 10; font-family: system-ui, sans-serif;
+  white-space: nowrap; pointer-events: none;
+  animation: pulse-glow 2s ease-in-out infinite; transition: opacity 0.4s ease;
+}
+.mirror-label.hidden { opacity: 0; }
+
+@keyframes pulse-glow {
+  0%   { box-shadow: 0 0 8px rgba(180,100,255,0.4); opacity: 1; }
+  50%  { box-shadow: 0 0 20px rgba(180,100,255,0.9); opacity: 0.85; }
+  100% { box-shadow: 0 0 8px rgba(180,100,255,0.4); opacity: 1; }
+}
+
+.question-screen { display: flex; align-items: flex-start; justify-content: center; }
+.question-screen .bg-fixed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 0; }
+
+.question-scroll {
+  position: relative; z-index: 2; width: 100%; max-width: 420px;
+  margin: 0 auto; height: 100%; overflow-y: auto; padding-bottom: 80px;
+}
+
+.card-image { width: 100%; height: 50vh; display: flex; align-items: center; justify-content: center; padding: 16px 16px 8px; }
+.card-image img { width: auto; max-width: 100%; height: 100%; object-fit: contain; }
+
+.question-plate { width: 100%; background: #4CAF50; color: #ffffff; padding: 10px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; font-family: system-ui, sans-serif; }
+
+.answers { display: flex; flex-direction: column; gap: 8px; padding: 10px 14px; }
+.answer-plate {
+  background: rgba(40, 20, 80, 0.75); color: #fff; padding: 10px 14px;
+  font-size: 13px; border-radius: 8px; cursor: pointer; display: flex;
+  align-items: center; justify-content: space-between; width: 100%;
+  transition: background 0.2s; user-select: none; font-family: system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; line-height: 1.4;
+}
+.answer-plate.selected { background: rgba(40, 120, 40, 0.85); }
+.checkmark { display: none; color: #4cff4c; font-size: 14px; flex-shrink: 0; margin-left: 8px; }
+.answer-plate.selected .checkmark { display: inline; }
+
+.next-plate, .back-plate {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(60, 0, 100, 0.92); color: #fff; text-align: center;
+  padding: 10px 36px; border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px);
+  letter-spacing: 2px; cursor: pointer; z-index: 10; user-select: none;
+  font-family: system-ui, sans-serif; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.next-plate:active, .back-plate:active { opacity: 0.75; transform: translateX(-50%) scale(0.96); }
+
+#scores-table { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.score-row {
+  display: flex; justify-content: space-between; background: rgba(255,255,255,0.1);
+  padding: 10px 18px; border-radius: 8px; color: #fff; font-size: clamp(13px, 1.4vw, 18px);
+  font-family: system-ui, sans-serif;
+}
+
+#scores-text { color: #fff; font-size: clamp(12px, 1.2vw, 16px); text-align: center; line-height: 1.6; padding: 0 16px; font-family: system-ui, sans-serif; }
+
+#get-result-btn {
+  margin-top: 20px; padding: 14px 36px; background: rgba(100, 0, 160, 0.9);
+  color: #fff; border: none; border-radius: 30px; font-size: clamp(14px, 1.4vw, 19px);
+  cursor: pointer; font-family: system-ui, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+
+.waiting-plate {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(60, 0, 100, 0.92); color: #fff; text-align: center;
+  padding: 10px 36px; border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px);
+  letter-spacing: 2px; z-index: 10; font-family: system-ui, sans-serif; white-space: nowrap;
+}
+
+.result-content {
+  position: relative; z-index: 2; width: 100%; height: 100%; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; padding: 20px; overflow-y: auto;
+}
+
+#result-text {
+  max-width: 600px; color: #fff; font-size: clamp(13px, 1.4vw, 16px);
+  line-height: 1.8; text-align: center; padding: 20px; font-family: system-ui, sans-serif;
+  background: rgba(40, 15, 5, 0.75); border-radius: 16px; margin-bottom: 80px;
+}
+
+#review-plate {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: rgba(60, 0, 100, 0.92); color: #fff; text-align: center;
+  padding: 10px 36px; border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px);
+  letter-spacing: 2px; cursor: pointer; z-index: 10; user-select: none;
+  font-family: system-ui, sans-serif; white-space: nowrap; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+#review-plate:active { opacity: 0.75; transform: translateX(-50%) scale(0.96); }
+
+
+/* ======== СТИЛИ ФОРМЫ ОТЗЫВА ======== */
+.review-write-wrap {
+  position: relative; z-index: 2; width: 100%; height: 100%; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; padding: 30px 24px;
+}
+
+.review-write-box { width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
+
+#review-prompt {
+  color: #ffffff; font-size: clamp(14px, 1.6vw, 18px); text-align: center;
+  line-height: 1.5; font-family: system-ui, sans-serif; margin-bottom: 16px;
+}
+
+/* Поле для имени */
+#review-name {
+  width: 100%; background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px; color: #fff; font-size: clamp(14px, 1.5vw, 18px);
+  padding: 12px 14px; font-family: system-ui, sans-serif; outline: none;
+  margin-bottom: 10px;
+}
+#review-name::placeholder { color: rgba(255,255,255,0.4); }
+
+#review-textarea {
+  width: 100%; height: 120px; background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 12px; color: #fff; font-size: clamp(14px, 1.5vw, 18px); padding: 14px;
+  font-family: system-ui, sans-serif; resize: none; outline: none;
+}
+#review-textarea::placeholder { color: rgba(255,255,255,0.4); }
+
+#review-send-btn {
+  padding: 14px 40px; margin-top: 15px; background: rgba(100, 0, 160, 0.9);
+  color: #fff; border: none; border-radius: 30px; font-size: clamp(14px, 1.5vw, 17px);
+  font-weight: bold; cursor: pointer; font-family: system-ui, sans-serif;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent; width: 100%;
+  transition: transform 0.1s ease;
+}
+#review-send-btn:active { opacity: 0.75; transform: scale(0.96); }
+
+#go-to-reviews-btn {
+  padding: 12px 30px; margin-top: 12px; background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
+  font-family: system-ui, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  width: 100%; transition: transform 0.1s ease;
+}
+#go-to-reviews-btn:active { opacity: 0.75; transform: scale(0.96); }
+
+#review-thanks {
+  display: none; color: #4cff4c; font-size: clamp(15px, 1.6vw, 19px);
+  text-align: center; margin-bottom: 20px; font-family: system-ui, sans-serif;
+}
+
+/* Экран чтения отзывов */
+.reviews-read-wrap {
+  position: relative; z-index: 2; width: 100%; height: 100%; display: flex;
+  flex-direction: column; padding: 20px 16px 80px 16px;
+}
+
+.reviews-scroll-list {
+  width: 100%; max-width: 420px; margin: 0 auto; height: 100%; 
+  overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 6px; 
+}
+.reviews-scroll-list::-webkit-scrollbar { width: 4px; }
+.reviews-scroll-list::-webkit-scrollbar-track { background: transparent; }
+.reviews-scroll-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+.review-card { background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; text-align: left; }
+.review-author { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: system-ui, sans-serif; }
+.review-text { font-size: clamp(13px, 1.4vw, 16px); color: #e0e0e0; line-height: 1.5; font-family: system-ui, sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+<div class="carousel" id="carousel">
+
+  <!-- ЭКРАН 0 -->
+  <div class="screen" id="screen-0"><video id="intro-video" class="video-screen" src="beginning.mp4" autoplay muted playsinline preload="auto"></video></div>
+  
+  <!-- ЭКРАН 1 -->
+  <div class="screen" id="screen-1"><img class="bg" src="background.png" alt="bg" /><div class="rules-plate-container"><div class="rules-plate"><h2>Здравствуй, путник!</h2><p>Приглашаем тебя заглянуть в своё отражение и узнать, какая стихия преобладает в твоём темпераменте. Мы предлагаем тебе ответить на 16 вопросов и познакомиться с собой поближе — возможно, что-то о себе ты узнаешь впервые.</p><p>В природе не существует «чистых» типов, все мы — сложное сплетение разных граней. Поэтому на любой из вопросов ты можешь выбрать <strong>один или сразу два</strong> варианта ответа. Если передумаешь, свой выбор всегда можно легко поменять.</p><p>Будь искренним с собой, и зеркало покажет твою настоящую суть.</p><button class="continue-btn" id="start-btn">ПРОДОЛЖИТЬ</button></div></div></div>
+
+  <!-- ЭКРАН 2 -->
+  <div class="screen" id="screen-2"><img class="bg" src="background.png" alt="bg" /><div class="mirror-wrap"><img id="mirror-btn" src="mirror_button.png" alt="Начать" draggable="false" /></div><div class="mirror-label" id="mirror-label">ЗАГЛЯНУТЬ В ЗЕРКАЛО</div></div>
+
+  <!-- ЭКРАНЫ 3-18 (Вопросы) -->
+  <div class="screen question-screen" id="screen-3" data-question="0"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_1.png" alt="card 1" /></div><div class="question-plate">1. Утро. Будильник прозвенел. Твои действия?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Встаю сразу, уже думаю что делать <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Встаю бодро, настроение хорошее <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Встаю медленно, нужно время раскачаться <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Лежу, думаю о делах, немного тревожно <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-4" data-question="1"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_2.png" alt="card 2" /></div><div class="question-plate">2. На работе/учёбе дали срочное задание. Реакция?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Азарт, сразу берусь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Окей, разберёмся, не паникую <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Вздыхаю, но методично делаю <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Паникую, трудно сосредоточиться <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-5" data-question="2"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_3.png" alt="card 3" /></div><div class="question-plate">3. Как ты принимаешь решения?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Быстро, по интуиции, потом разберёмся <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Быстро, но взвешиваю варианты <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Медленно, обдумываю всё тщательно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Долго, боюсь ошибиться <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-6" data-question="3"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_4.png" alt="card 4" /></div><div class="question-plate">4. Вечеринка с незнакомыми людьми. Ты?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) В центре внимания, знакомлюсь со всеми <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Общаюсь легко, нахожу интересных людей <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Пару разговоров и мне достаточно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Некомфортно, держусь в стороне <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-7" data-question="4"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_5.png" alt="card 5" /></div><div class="question-plate">5. Тебя критикуют публично. Ты?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Отвечаю резко, защищаюсь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Не принимаю близко к сердцу, отшучиваюсь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Молча принимаю, обдумываю потом <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Очень больно, долго переживаю <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-8" data-question="5"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_6.png" alt="card 6" /></div><div class="question-plate">6. Твой рабочий стол / пространство?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Хаос, но я знаю где что лежит <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Постоянно меняется <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Всё на своих местах, система <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Чисто, но есть личные вещи <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-9" data-question="6"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_7.png" alt="card 7" /></div><div class="question-plate">7. Как ты отдыхаешь после тяжёлого дня?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Спорт, физическая активность <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Встреча с друзьями, общение <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Тихо дома, книга или сериал <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Одиночество, музыка, творчество <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-10" data-question="7"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_8.png" alt="card 8" /></div><div class="question-plate">8. Тебе скучно. Что делаешь?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Нахожу активность немедленно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Звоню кому-нибудь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Займусь чем-нибудь спокойно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Ухожу в мысли, фантазии <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-11" data-question="8"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_9.png" alt="card 9" /></div><div class="question-plate">9. Конфликт с близким человеком. Ты?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Говорю сразу и прямо <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Пытаюсь найти компромисс <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Замалчиваю, потом спокойно говорю <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Очень переживаю внутри <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-12" data-question="9"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_10.png" alt="card 10" /></div><div class="question-plate">10. Как ты относишься к планированию?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Действую по ситуации <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) План есть, но гибко меняю <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Чёткий план, расписание <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Планирую, но тревожусь <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-13" data-question="10"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_11.png" alt="card 11" /></div><div class="question-plate">11. Твой темп жизни?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Быстро, динамично <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Активно, но без фанатизма <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Размеренно, стабильно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Хочу спокойствия <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-14" data-question="11"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_12.png" alt="card 12" /></div><div class="question-plate">12. Спорт и физическая активность?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Выброс энергии, интенсив <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Удовольствие в компании <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Одиночные практики, йога <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Не моё <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-15" data-question="12"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_13.png" alt="card 13" /></div><div class="question-plate">13. Чувства после скопления людей?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Заряжен, хочу ещё <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Хорошо, немного устал <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Устал, нужно побыть одному <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Сильно вымотан <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-16" data-question="13"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_14.png" alt="card 14" /></div><div class="question-plate">14. Друзья попросили помочь срочно?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Бросаю всё и лечу <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Сначала уточню детали <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Если не нарушает планы <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Помогу, но внутри будет тяжело <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-17" data-question="14"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_15.png" alt="card 15" /></div><div class="question-plate">15. Перемены в жизни?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Обожаю перемены <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Воспринимаю легко <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Нужно время привыкнуть <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Пугают, лучше стабильность <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+  <div class="screen question-screen" id="screen-18" data-question="15"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_16.png" alt="card 16" /></div><div class="question-plate">16. Что про тебя говорят люди?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Импульсивный <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Душа компании <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Надёжный <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Слишком много думаешь <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+
+  <!-- ЭКРАН 19 -->
+  <div class="screen" id="screen-19"><img class="bg" src="background.png" alt="bg" /><div class="result-content"><div id="scores-table"></div><p id="scores-text"></p><button id="get-result-btn">Получить результат</button></div></div>
+
+  <!-- ЭКРАН 20 -->
+  <div class="screen" id="screen-20"><video id="waiting-video" class="video-screen" src="waiting.mp4" playsinline loop preload="auto"></video><div class="waiting-plate">СОБИРАЕМ ГРАНИ ТВОЕГО ОТРАЖЕНИЯ</div></div>
+
+  <!-- ЭКРАН 21 -->
+  <div class="screen" id="screen-21"><img class="bg" src="background.png" alt="bg" /><div class="result-content"><div id="result-text"></div></div><div id="review-plate">ОСТАВИТЬ ОТЗЫВ</div></div>
+
+  <!-- ЭКРАН 22: Написать отзыв -->
+  <div class="screen" id="screen-22">
+    <img class="bg" src="background.png" alt="bg" />
+    <div class="review-write-wrap">
+      <div class="review-write-box">
+        <p id="review-thanks">Спасибо за твой отзыв! ✨</p>
+        
+        <p id="review-prompt">Расскажи, как тебе тест — это поможет нам стать лучше! 🙏</p>
+        
+        <input type="text" id="review-name" placeholder="Твоё имя (или ник)" maxlength="20" />
+        
+        <textarea id="review-textarea" maxlength="150" placeholder="Напиши свой отзыв здесь..."></textarea>
+        
+        <div id="char-wrap" style="width: 100%; margin-top: 5px;">
+          <div style="width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 10px; height: 6px; overflow: hidden;">
+            <div id="char-progress" style="width: 100%; height: 100%; background-color: white; transition: width 0.2s, background-color 0.3s;"></div>
+          </div>
+          <p id="char-counter" style="font-size: 11px; color: white; margin-top: 5px; margin-bottom: 5px; text-align: right;">Осталось: 150</p>
+        </div>
+        
+        <button id="review-send-btn">ОТПРАВИТЬ</button>
+        <button id="go-to-reviews-btn">ЧИТАТЬ ОТЗЫВЫ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ЭКРАН 23: Читать отзывы -->
+  <div class="screen" id="screen-23">
+    <img class="bg" src="background.png" alt="bg" />
+    <div class="reviews-read-wrap">
+      <div class="reviews-scroll-list">
+        
+        <div class="review-card">
+          <div class="review-author">Алиса</div>
+          <div class="review-text">Очень атмосферно! Не ожидала, что результат настолько точно опишет мое состояние сейчас. Картинки просто супер.</div>
+        </div>
+        <div class="review-card">
+          <div class="review-author">Максим</div>
+          <div class="review-text">Тест заставил остановиться и немного подумать. Спасибо за этот приятный опыт, дизайн на высоте.</div>
+        </div>
+        <div class="review-card">
+          <div class="review-author">Елена</div>
+          <div class="review-text">Я перепроходила два раза, потому что первый раз отвечала не совсем честно. Второе отражение — 100% я.</div>
+        </div>
+        <div class="review-card">
+          <div class="review-author">Иван</div>
+          <div class="review-text">Быстро, динамично, ничего лишнего. С результатами согласен полностью! Буду скидывать друзьям.</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="back-plate" id="back-to-review-btn">НАЗАД</div>
+  </div>
+
+</div>
+</div>
+
+<script src="data/texts.js"></script>
+<script>
+var TOTAL_SCREENS = 24;
+
+var answerQueues = [];
+for (var i = 0; i < 16; i++) { answerQueues.push([]); }
+
+var scores = { choleric: 0, sanguine: 0, phlegmatic: 0, melancholic: 0 };
+var currentScreen = 0;
+var waitingTimer = null;
+var hasSeenResult = false; // НОВАЯ ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ (память)
+
+var DEFAULT_TEMPLATE = "Зеркало увидело в тебе уникальное сочетание граней. Ты — сложная и интересная личность, которую не уложить в рамки.";
+
+var PCT_TEMPLATES = [
+  [100, 0,  0,  0 ], [70,  30, 0,  0 ], [70,  20, 10, 0 ], [70,  10, 10, 10],
+  [60,  30, 10, 0 ], [60,  20, 20, 0 ], [60,  20, 10, 10], [50,  50, 0,  0 ],
+  [50,  30, 20, 0 ], [50,  30, 15, 15], [50,  25, 25, 0 ], [40,  40, 10, 10],
+  [40,  30, 20, 10], [30,  30, 30, 10], [25,  25, 25, 25]
+];
+
+var TYPE_NAMES = {
+  choleric:    'Холерик', sanguine:    'Сангвиник',
+  phlegmatic:  'Флегматик', melancholic: 'Меланхолик'
+};
+
+var carousel = document.getElementById('carousel');
+carousel.style.width = (TOTAL_SCREENS * 100) + '%';
+var allScreens = document.querySelectorAll('.screen');
+for (var si = 0; si < allScreens.length; si++) { allScreens[si].style.width = (100 / TOTAL_SCREENS) + '%'; }
+
+function goTo(index) {
+  if (index < 0 || index >= TOTAL_SCREENS) return;
+  if (currentScreen === 20 && index !== 20) {
+    if (waitingTimer) { clearTimeout(waitingTimer); waitingTimer = null; }
+    document.getElementById('waiting-video').pause();
+  }
+  currentScreen = index;
+  carousel.style.transform = 'translateX(-' + (index * (100 / TOTAL_SCREENS)) + '%)';
+  
+  if (index === 20) {
+    var wv = document.getElementById('waiting-video');
+    wv.muted = false; wv.volume = 1.0; wv.currentTime = 0;
+    wv.play().catch(function() {});
+    var delay = Math.floor(Math.random() * (8000 - 4000 + 1)) + 4000;
+    waitingTimer = setTimeout(function() {
+      waitingTimer = null;
+      if (currentScreen === 20) {
+        document.getElementById('waiting-video').pause();
+        buildResultText();
+        hasSeenResult = true; // СТАВИМ ГАЛОЧКУ, ЧТО РЕЗУЛЬТАТ УЖЕ ПОЛУЧЕН
+        goTo(21);
+      }
+    }, delay);
+  }
+}
+
+function makeSwipeable(el, onLeft, onRight) {
+  var sx = 0, sy = 0, active = false;
+  function onStart(x, y) { sx = x; sy = y; active = true; }
+  function onEnd(x, y) {
+    if (!active) return;
+    active = false;
+    var dx = x - sx, dy = y - sy;
+    if (Math.abs(dx) < 40) return;
+    if (Math.abs(dy) > Math.abs(dx)) return;
+    if (dx < 0 && onLeft)  onLeft();
+    if (dx > 0 && onRight) onRight();
+  }
+  el.addEventListener('touchstart', function(e) { onStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+  el.addEventListener('touchend',   function(e) { onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY); }, { passive: true });
+  el.addEventListener('mousedown',  function(e) { onStart(e.clientX, e.clientY); });
+  el.addEventListener('mouseup',    function(e) { onEnd(e.clientX, e.clientY); });
+  el.addEventListener('mouseleave', function()  { active = false; });
+}
+
+var introVideo = document.getElementById('intro-video');
+introVideo.addEventListener('ended', function() { goTo(1); });
+introVideo.play().catch(function() { document.getElementById('screen-0').addEventListener('click', function() { goTo(1); }, { once: true }); });
+
+document.getElementById('start-btn').addEventListener('click', function(e) { e.stopPropagation(); goTo(2); });
+
+var mirrorBtn   = document.getElementById('mirror-btn');
+var mirrorLabel = document.getElementById('mirror-label');
+function triggerMirror() { mirrorLabel.classList.add('hidden'); setTimeout(function() { goTo(3); }, 350); }
+mirrorBtn.addEventListener('click', function(e) { e.stopPropagation(); triggerMirror(); });
+mirrorBtn.addEventListener('touchend', function(e) { e.preventDefault(); e.stopPropagation(); triggerMirror(); });
+
+function recalcScores() {
+  scores.choleric = scores.sanguine = scores.phlegmatic = scores.melancholic = 0;
+  for (var q = 0; q < answerQueues.length; q++) {
+    var queue  = answerQueues[q];
+    var weight = (queue.length === 2) ? 0.5 : 1;
+    for (var a = 0; a < queue.length; a++) { scores[queue[a].type] += weight; }
+  }
+}
+
+function getRawPercents() {
+  recalcScores();
+  var total = scores.choleric + scores.sanguine + scores.phlegmatic + scores.melancholic;
+  if (total === 0) return { choleric: 0, sanguine: 0, phlegmatic: 0, melancholic: 0 };
+  return {
+    choleric: Math.round(scores.choleric / total * 100), sanguine: Math.round(scores.sanguine / total * 100),
+    phlegmatic: Math.round(scores.phlegmatic / total * 100), melancholic: Math.round(scores.melancholic / total * 100)
+  };
+}
+
+function snapToTemplate(raw) {
+  var types = ['choleric','sanguine','phlegmatic','melancholic'];
+  var sorted = types.map(function(t) { return { type: t, val: raw[t] }; })
+                    .sort(function(a, b) { if (b.val !== a.val) return b.val - a.val; return types.indexOf(a.type) - types.indexOf(b.type); });
+  var sortedVals = sorted.map(function(x) { return x.val; });
+  var best = PCT_TEMPLATES[0], bestDelta = Infinity;
+  for (var i = 0; i < PCT_TEMPLATES.length; i++) {
+    var delta = 0;
+    for (var j = 0; j < 4; j++) { delta += Math.abs(sortedVals[j] - PCT_TEMPLATES[i][j]); }
+    if (delta < bestDelta) { bestDelta = delta; best = PCT_TEMPLATES[i]; }
+  }
+  var snapped = {};
+  for (var k = 0; k < 4; k++) { snapped[sorted[k].type] = best[k]; }
+  return snapped;
+}
+
+function getResultKey(snapped) {
+  var types = ['choleric','sanguine','phlegmatic','melancholic'];
+  return types.map(function(t) { return { type: t, val: snapped[t] }; })
+              .sort(function(a, b) { if (b.val !== a.val) return b.val - a.val; return types.indexOf(a.type) - types.indexOf(b.type); })
+              .filter(function(x) { return x.val > 0; })
+              .map(function(x) { return x.type + '_' + x.val; }).join('__');
+}
+
+function buildScoresTable() {
+  recalcScores();
+  var totalAnswers = 0;
+  for (var i = 0; i < answerQueues.length; i++) { totalAnswers += answerQueues[i].length; }
+  if (totalAnswers === 0) {
+    document.getElementById('scores-text').textContent = 'Зеркало молчит — ты не выбрал ни одного ответа.';
+    document.getElementById('get-result-btn').textContent = 'ПРОЙТИ ЗАНОВО';
+    document.getElementById('scores-table').innerHTML = '';
+    window._emptyRun = true; window._finalKey = null; return;
+  }
+  window._emptyRun = false;
+  document.getElementById('get-result-btn').textContent = 'Получить результат';
+  var snapped = snapToTemplate(getRawPercents());
+  var entries = [
+    ['choleric', snapped.choleric], ['sanguine', snapped.sanguine],
+    ['phlegmatic', snapped.phlegmatic], ['melancholic', snapped.melancholic]
+  ];
+  entries.sort(function(a, b) { return b[1] - a[1]; });
+  var table = document.getElementById('scores-table'); table.innerHTML = '';
+  for (var i = 0; i < entries.length; i++) {
+    if (entries[i][1] === 0) continue;
+    var row = document.createElement('div'); row.className = 'score-row';
+    row.innerHTML = '<span>' + TYPE_NAMES[entries[i][0]] + '</span><span>' + entries[i][1] + '%</span>';
+    table.appendChild(row);
+  }
+  var parts = [];
+  for (var j = 0; j < entries.length; j++) { if (entries[j][1] > 0) parts.push('на ' + entries[j][1] + '% ' + TYPE_NAMES[entries[j][0]].toLowerCase()); }
+  document.getElementById('scores-text').textContent = 'Ты ' + parts.join(', ');
+  window._finalKey = getResultKey(snapped);
+}
+
+function buildResultText() {
+  if (!window._finalKey) buildScoresTable();
+  var key = window._finalKey;
+  var arr = (typeof RESULT_TEXTS !== 'undefined') ? RESULT_TEXTS[key] : undefined;
+  var text;
+  if (typeof arr === 'string' && arr.length > 0) text = arr;
+  else if (Array.isArray(arr) && arr.length > 0) text = arr[Math.floor(Math.random() * arr.length)];
+  else text = DEFAULT_TEMPLATE;
+  document.getElementById('result-text').textContent = text;
+}
+
+function refreshPlates(qIndex) {
+  var screen = document.querySelector('.question-screen[data-question="' + qIndex + '"]');
+  if (!screen) return;
+  var queue  = answerQueues[qIndex];
+  var chosen = [];
+  for (var i = 0; i < queue.length; i++) { chosen.push(queue[i].index); }
+  var plates = screen.querySelectorAll('.answer-plate');
+  for (var p = 0; p < plates.length; p++) {
+    var idx = parseInt(plates[p].getAttribute('data-index'));
+    if (chosen.indexOf(idx) !== -1) plates[p].classList.add('selected');
+    else plates[p].classList.remove('selected');
+  }
+}
+
+var questionScreens = document.querySelectorAll('.question-screen');
+for (var qs = 0; qs < questionScreens.length; qs++) {
+  (function(screen) {
+    var qIndex = parseInt(screen.getAttribute('data-question'));
+    var screenIndex = qIndex + 3;
+    makeSwipeable(screen, null, function() { if (currentScreen > 3) goTo(currentScreen - 1); });
+    var plates = screen.querySelectorAll('.answer-plate');
+    for (var p = 0; p < plates.length; p++) {
+      (function(plate) {
+        plate.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var type = plate.getAttribute('data-type');
+          var idx  = parseInt(plate.getAttribute('data-index'));
+          var queue = answerQueues[qIndex];
+          var pos = -1;
+          for (var i = 0; i < queue.length; i++) { if (queue[i].index === idx) { pos = i; break; } }
+          if (pos !== -1) queue.splice(pos, 1);
+          else { if (queue.length >= 2) queue.shift(); queue.push({ index: idx, type: type }); }
+          recalcScores(); refreshPlates(qIndex);
+        });
+      })(plates[p]);
+    }
+    var nextBtn = screen.querySelector('.next-plate');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (screenIndex === 18) { buildScoresTable(); goTo(19); } else { goTo(screenIndex + 1); }
+      });
+    }
+  })(questionScreens[qs]);
+}
+
+// ОБНОВЛЕННАЯ КНОПКА С ПРОВЕРКОЙ ГАЛОЧКИ
+document.getElementById('get-result-btn').addEventListener('click', function() {
+  if (window._emptyRun === true) { 
+    goTo(3); 
+    return; 
+  }
+  
+  if (hasSeenResult) {
+    goTo(21); // Если уже смотрел, кидаем сразу на текст
+  } else {
+    goTo(20); // Если первый раз, показываем видео
+  }
+});
+
+// Кнопки навигации отзывов
+document.getElementById('review-plate').addEventListener('click', function() { goTo(22); });
+document.getElementById('review-plate').addEventListener('touchend', function(e) { e.preventDefault(); goTo(22); });
+
+document.getElementById('go-to-reviews-btn').addEventListener('click', function() { goTo(23); });
+document.getElementById('go-to-reviews-btn').addEventListener('touchend', function(e) { e.preventDefault(); goTo(23); });
+
+document.getElementById('back-to-review-btn').addEventListener('click', function() { goTo(22); });
+document.getElementById('back-to-review-btn').addEventListener('touchend', function(e) { e.preventDefault(); goTo(22); });
+
+makeSwipeable(document.getElementById('screen-23'), null, function() { goTo(22); });
+makeSwipeable(document.getElementById('screen-22'), null, function() { goTo(21); });
+makeSwipeable(document.getElementById('screen-21'), null, function() { goTo(19); });
+
+// Отправка отзыва
+document.getElementById('review-send-btn').addEventListener('click', function() {
+  var name = document.getElementById('review-name').value.trim();
+  var text = document.getElementById('review-textarea').value.trim();
+  
+  if (!text) return;
+
+  document.getElementById('review-prompt').style.display = 'none';
+  document.getElementById('review-name').style.display = 'none';
+  document.getElementById('review-textarea').style.display = 'none';
+  document.getElementById('review-send-btn').style.display = 'none';
+  document.getElementById('char-wrap').style.display = 'none';
+  
+  document.getElementById('review-thanks').style.display = 'block';
+});
+
+// Подсчет символов
+var reviewTextarea = document.getElementById('review-textarea');
+var charProgress = document.getElementById('char-progress');
+var charCounter = document.getElementById('char-counter');
+var maxChars = 150;
+
+if (reviewTextarea && charProgress && charCounter) {
+  reviewTextarea.addEventListener('input', function() {
+    var currentLength = this.value.length;
+    var remaining = maxChars - currentLength;
+    charCounter.textContent = 'Осталось: ' + remaining;
+    var percent = (remaining / maxChars) * 100;
+    charProgress.style.width = percent + '%';
+    if (remaining <= 20) {
+      charProgress.style.backgroundColor = '#ff6b6b';
+      charCounter.style.color = '#ff6b6b';
+    } else {
+      charProgress.style.backgroundColor = 'white';
+      charCounter.style.color = 'white';
+    }
+  });
+}
+</script>
+</body>
+</html>
