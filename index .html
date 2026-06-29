@@ -5,16 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Зеркало</title>
 
-<!-- ===== ПРЕВЬЮ ПРИ РЕПОСТЕ В СЕТИ И МЕССЕНДЖЕРЫ ===== -->
 <meta property="og:title"        content="Зеркало — Узнай свою настоящую суть" />
 <meta property="og:description"  content="Пройди тест из 16 вопросов и узнай, какая стихия преобладает в твоём темпераменте." />
 <meta property="og:image"        content="https://yalica.github.io/zerkalo-test/cover.png" />
 <meta property="og:type"         content="website" />
 <meta name="twitter:card"        content="summary_large_image" />
 
-<!-- ===== ПРЕДЗАГРУЗКА ВИДЕО И КАРТИНОК ===== -->
-<link rel="preload" as="video" href="beginning1.mp4" type="video/mp4">
-<link rel="preload" as="image" href="cover.png">
 <link rel="preload" as="image" href="background.png">
 <link rel="preload" as="image" href="mirror_button.png">
 <link rel="preload" as="image" href="card_1.png">
@@ -256,6 +252,7 @@ html, body {
   line-height: 1.5; font-family: system-ui, sans-serif; margin-bottom: 16px;
 }
 
+/* Поле для имени */
 #review-name {
   width: 100%; background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.3);
   border-radius: 12px; color: #fff; font-size: clamp(14px, 1.5vw, 18px);
@@ -311,26 +308,6 @@ html, body {
 .review-card { background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; text-align: left; }
 .review-author { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: system-ui, sans-serif; }
 .review-text { font-size: clamp(13px, 1.4vw, 16px); color: #e0e0e0; line-height: 1.5; font-family: system-ui, sans-serif; }
-
-/* КНОПКА ПЛЕЙ (ОВЕРЛЕЙ) ДЛЯ ВКЛЮЧЕНИЯ ЗВУКА */
-#start-overlay {
-  position: absolute; top:0; left:0; width:100%; height:100%; z-index:10; 
-  background: url('cover.png') center/cover no-repeat; 
-  display:flex; align-items:center; justify-content:center; cursor:pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.play-text {
-  background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-  color: #fff; font-family: system-ui, sans-serif; font-size: 16px; font-weight: bold;
-  padding: 16px 32px; border: 1px solid rgba(255,255,255,0.4); border-radius: 30px;
-  letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  animation: pulse-btn 2s infinite;
-}
-@keyframes pulse-btn {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
 </style>
 </head>
 <body>
@@ -338,16 +315,8 @@ html, body {
 <div class="phone-frame">
 <div class="carousel" id="carousel">
 
-  <!-- ЭКРАН 0 (Оверлей для звука + видео) -->
-  <div class="screen" id="screen-0">
-    <!-- Видео теперь без autoplay и без muted! Оно ждет клика. -->
-    <video id="intro-video" class="video-screen" src="beginning1.mp4" playsinline preload="auto"></video>
-    
-    <!-- Тот самый стартовый экран, чтобы разблокировать звук -->
-    <div id="start-overlay">
-      <div class="play-text">Нажми, чтобы начать</div>
-    </div>
-  </div>
+  <!-- ЭКРАН 0 -->
+  <div class="screen" id="screen-0"><video id="intro-video" class="video-screen" src="beginning.mp4" autoplay muted playsinline preload="auto"></video></div>
   
   <!-- ЭКРАН 1 -->
   <div class="screen" id="screen-1"><img class="bg" src="background.png" alt="bg" /><div class="rules-plate-container"><div class="rules-plate"><h2>Здравствуй, путник!</h2><p>Приглашаем тебя заглянуть в своё отражение и узнать, какая стихия преобладает в твоём темпераменте. Мы предлагаем тебе ответить на 16 вопросов и познакомиться с собой поближе — возможно, что-то о себе ты узнаешь впервые.</p><p>В природе не существует «чистых» типов, все мы — сложное сплетение разных граней. Поэтому на любой из вопросов ты можешь выбрать <strong>один или сразу два</strong> варианта ответа. Если передумаешь, свой выбор всегда можно легко поменять.</p><p>Будь искренним с собой, и зеркало покажет твою настоящую суть.</p><button class="continue-btn" id="start-btn">ПРОДОЛЖИТЬ</button></div></div></div>
@@ -449,7 +418,7 @@ for (var i = 0; i < 16; i++) { answerQueues.push([]); }
 var scores = { choleric: 0, sanguine: 0, phlegmatic: 0, melancholic: 0 };
 var currentScreen = 0;
 var waitingTimer = null;
-var hasSeenResult = false; 
+var hasSeenResult = false; // НОВАЯ ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ (память)
 
 var DEFAULT_TEMPLATE = "Зеркало увидело в тебе уникальное сочетание граней. Ты — сложная и интересная личность, которую не уложить в рамки.";
 
@@ -489,7 +458,7 @@ function goTo(index) {
       if (currentScreen === 20) {
         document.getElementById('waiting-video').pause();
         buildResultText();
-        hasSeenResult = true; 
+        hasSeenResult = true; // СТАВИМ ГАЛОЧКУ, ЧТО РЕЗУЛЬТАТ УЖЕ ПОЛУЧЕН
         goTo(21);
       }
     }, delay);
@@ -515,20 +484,9 @@ function makeSwipeable(el, onLeft, onRight) {
   el.addEventListener('mouseleave', function()  { active = false; });
 }
 
-
-/* ЛОГИКА ЗАПУСКА ВИДЕО ПО КЛИКУ ДЛЯ ЗВУКА */
 var introVideo = document.getElementById('intro-video');
-var startOverlay = document.getElementById('start-overlay');
-
-startOverlay.addEventListener('click', function(e) {
-  e.stopPropagation();
-  startOverlay.style.display = 'none'; // прячем кнопку
-  introVideo.muted = false; // ВКЛЮЧАЕМ ЗВУК
-  introVideo.play().catch(function(err) { console.log(err); }); // запускаем видео
-});
-
 introVideo.addEventListener('ended', function() { goTo(1); });
-
+introVideo.play().catch(function() { document.getElementById('screen-0').addEventListener('click', function() { goTo(1); }, { once: true }); });
 
 document.getElementById('start-btn').addEventListener('click', function(e) { e.stopPropagation(); goTo(2); });
 
@@ -669,12 +627,18 @@ for (var qs = 0; qs < questionScreens.length; qs++) {
   })(questionScreens[qs]);
 }
 
+// ОБНОВЛЕННАЯ КНОПКА С ПРОВЕРКОЙ ГАЛОЧКИ
 document.getElementById('get-result-btn').addEventListener('click', function() {
   if (window._emptyRun === true) { 
     goTo(3); 
     return; 
   }
-  if (hasSeenResult) { goTo(21); } else { goTo(20); }
+  
+  if (hasSeenResult) {
+    goTo(21); // Если уже смотрел, кидаем сразу на текст
+  } else {
+    goTo(20); // Если первый раз, показываем видео
+  }
 });
 
 // Кнопки навигации отзывов
