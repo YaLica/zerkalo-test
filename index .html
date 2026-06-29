@@ -5,12 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Зеркало</title>
 
-<meta property="og:title"        content="Зеркало — Узнай свою настоящую суть" />
-<meta property="og:description"  content="Пройди тест из 16 вопросов и узнай, какая стихия преобладает в твоём темпераменте." />
+<!-- ===== КАРТИНКА ДЛЯ ССЫЛКИ (cover.png) ===== -->
+<meta property="og:title"        content="Зеркало" />
+<meta property="og:description"  content="Загляни в своё отражение" />
 <meta property="og:image"        content="https://yalica.github.io/zerkalo-test/cover.png" />
 <meta property="og:type"         content="website" />
 <meta name="twitter:card"        content="summary_large_image" />
 
+<!-- ===== ПРЕДЗАГРУЗКА ВИДЕО ===== -->
+<link rel="preload" as="video" href="beginning.mp4" type="video/mp4">
+<link rel="preload" as="video" href="waiting.mp4" type="video/mp4">
+
+<!-- ===== ПРЕДЗАГРУЗКА КАРТИНОК ===== -->
 <link rel="preload" as="image" href="background.png">
 <link rel="preload" as="image" href="mirror_button.png">
 <link rel="preload" as="image" href="card_1.png">
@@ -328,7 +334,7 @@ html, body {
   <div class="screen question-screen" id="screen-3" data-question="0"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_1.png" alt="card 1" /></div><div class="question-plate">1. Утро. Будильник прозвенел. Твои действия?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Встаю сразу, уже думаю что делать <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Встаю бодро, настроение хорошее <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Встаю медленно, нужно время раскачаться <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Лежу, думаю о делах, немного тревожно <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
   <div class="screen question-screen" id="screen-4" data-question="1"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_2.png" alt="card 2" /></div><div class="question-plate">2. На работе/учёбе дали срочное задание. Реакция?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Азарт, сразу берусь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Окей, разберёмся, не паникую <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Вздыхаю, но методично делаю <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Паникую, трудно сосредоточиться <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
   <div class="screen question-screen" id="screen-5" data-question="2"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_3.png" alt="card 3" /></div><div class="question-plate">3. Как ты принимаешь решения?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Быстро, по интуиции, потом разберёмся <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Быстро, но взвешиваю варианты <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Медленно, обдумываю всё тщательно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Долго, боюсь ошибиться <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
-  <div class="screen question-screen" id="screen-6" data-question="3"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_4.png" alt="card 4" /></div><div class="question-plate">4. Вечеринка с незнакомыми людьми. Ты?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) В центре внимания, знакомлюсь со всеми <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Общаюсь легко, нахожу интересных людей <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Пару разговоров и мне достаточно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Некомфортно, держусь в стороне <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
+    <div class="screen question-screen" id="screen-6" data-question="3"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_4.png" alt="card 4" /></div><div class="question-plate">4. Вечеринка с незнакомыми людьми. Ты?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) В центре внимания, знакомлюсь со всеми <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Общаюсь легко, нахожу интересных людей <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Пару разговоров и мне достаточно <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Некомфортно, держусь в стороне <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
   <div class="screen question-screen" id="screen-7" data-question="4"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_5.png" alt="card 5" /></div><div class="question-plate">5. Тебя критикуют публично. Ты?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Отвечаю резко, защищаюсь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Не принимаю близко к сердцу, отшучиваюсь <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Молча принимаю, обдумываю потом <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Очень больно, долго переживаю <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
   <div class="screen question-screen" id="screen-8" data-question="5"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_6.png" alt="card 6" /></div><div class="question-plate">6. Твой рабочий стол / пространство?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Хаос, но я знаю где что лежит <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Постоянно меняется <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Всё на своих местах, система <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Чисто, но есть личные вещи <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
   <div class="screen question-screen" id="screen-9" data-question="6"><img class="bg-fixed" src="background.png" alt="bg" /><div class="question-scroll"><div class="card-image"><img src="card_7.png" alt="card 7" /></div><div class="question-plate">7. Как ты отдыхаешь после тяжёлого дня?</div><div class="answers"><div class="answer-plate" data-type="choleric" data-index="0">А) Спорт, физическая активность <span class="checkmark">✔</span></div><div class="answer-plate" data-type="sanguine" data-index="1">Б) Встреча с друзьями, общение <span class="checkmark">✔</span></div><div class="answer-plate" data-type="phlegmatic" data-index="2">В) Тихо дома, книга или сериал <span class="checkmark">✔</span></div><div class="answer-plate" data-type="melancholic" data-index="3">Г) Одиночество, музыка, творчество <span class="checkmark">✔</span></div></div></div><div class="next-plate">ДАЛЕЕ</div></div>
@@ -410,6 +416,25 @@ html, body {
 
 <script src="data/texts.js"></script>
 <script>
+/* ===== ПРЕДЗАГРУЗКА КАРТИНОК В КЭШ ===== */
+(function() {
+  var imagesToPreload = [
+    'background.png','mirror_button.png',
+    'card_1.png','card_2.png','card_3.png','card_4.png','card_5.png','card_6.png',
+    'card_7.png','card_8.png','card_9.png','card_10.png','card_11.png','card_12.png',
+    'card_13.png','card_14.png','card_15.png','card_16.png'
+  ];
+  imagesToPreload.forEach(function(src) { var img = new Image(); img.src = src; });
+})();
+
+/* ===== ПРЕДЗАГРУЗКА ВИДЕО В КЭШ ===== */
+(function() {
+  var v1 = document.getElementById('intro-video');
+  if (v1) { v1.preload = 'auto'; v1.load(); }
+  var v2 = document.getElementById('waiting-video');
+  if (v2) { v2.preload = 'auto'; v2.load(); }
+})();
+
 var TOTAL_SCREENS = 24;
 
 var answerQueues = [];
@@ -418,7 +443,7 @@ for (var i = 0; i < 16; i++) { answerQueues.push([]); }
 var scores = { choleric: 0, sanguine: 0, phlegmatic: 0, melancholic: 0 };
 var currentScreen = 0;
 var waitingTimer = null;
-var hasSeenResult = false; // НОВАЯ ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ (память)
+var hasSeenResult = false;
 
 var DEFAULT_TEMPLATE = "Зеркало увидело в тебе уникальное сочетание граней. Ты — сложная и интересная личность, которую не уложить в рамки.";
 
@@ -458,7 +483,7 @@ function goTo(index) {
       if (currentScreen === 20) {
         document.getElementById('waiting-video').pause();
         buildResultText();
-        hasSeenResult = true; // СТАВИМ ГАЛОЧКУ, ЧТО РЕЗУЛЬТАТ УЖЕ ПОЛУЧЕН
+        hasSeenResult = true;
         goTo(21);
       }
     }, delay);
