@@ -493,8 +493,10 @@ document.getElementById('start-btn').addEventListener('click', function(e) { e.s
 var mirrorBtn   = document.getElementById('mirror-btn');
 var mirrorLabel = document.getElementById('mirror-label');
 function triggerMirror() { mirrorLabel.classList.add('hidden'); setTimeout(function() { goTo(3); }, 350); }
-mirrorBtn.addEventListener('click', function(e) { e.stopPropagation(); triggerMirror(); });
-mirrorBtn.addEventListener('touchend', function(e) { e.preventDefault(); e.stopPropagation(); triggerMirror(); });
+var mirrorFired = false;
+function fireMirror(e) { e.stopPropagation(); if (mirrorFired) return; mirrorFired = true; triggerMirror(); }
+mirrorBtn.addEventListener('pointerup', fireMirror);
+mirrorBtn.addEventListener('click', fireMirror);
 
 function recalcScores() {
   scores.choleric = scores.sanguine = scores.phlegmatic = scores.melancholic = 0;
