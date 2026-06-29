@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Зеркало</title>
 
+<!-- ===== ПРЕВЬЮ ПРИ РЕПОСТЕ В СЕТИ И МЕССЕНДЖЕРЫ ===== -->
+<meta property="og:title"        content="Зеркало — Узнай свою настоящую суть" />
+<meta property="og:description"  content="Пройди тест из 16 вопросов и узнай, какая стихия преобладает в твоём темпераменте." />
+<meta property="og:image"        content="https://yalica.github.io/zerkalo-test/cover.png" />
+<meta property="og:type"         content="website" />
+<meta name="twitter:card"        content="summary_large_image" />
+
+<!-- ===== ПРЕДЗАГРУЗКА ВИДЕО И КАРТИНОК ===== -->
+<link rel="preload" as="video" href="beginning1.mp4" type="video/mp4">
+<link rel="preload" as="image" href="cover.png">
 <link rel="preload" as="image" href="background.png">
 <link rel="preload" as="image" href="mirror_button.png">
 <link rel="preload" as="image" href="card_1.png">
@@ -309,8 +319,8 @@ html, body {
 <div class="phone-frame">
 <div class="carousel" id="carousel">
 
-  <!-- ЭКРАН 0 -->
-  <div class="screen" id="screen-0"><video id="intro-video" class="video-screen" src="beginning.mp4" autoplay muted playsinline preload="auto"></video></div>
+  <!-- ЭКРАН 0 (ТУТ ИСПРАВЛЕНО НА beginning1.mp4) -->
+  <div class="screen" id="screen-0"><video id="intro-video" class="video-screen" src="beginning1.mp4" autoplay muted playsinline preload="auto"></video></div>
   
   <!-- ЭКРАН 1 -->
   <div class="screen" id="screen-1"><img class="bg" src="background.png" alt="bg" /><div class="rules-plate-container"><div class="rules-plate"><h2>Здравствуй, путник!</h2><p>Приглашаем тебя заглянуть в своё отражение и узнать, какая стихия преобладает в твоём темпераменте. Мы предлагаем тебе ответить на 16 вопросов и познакомиться с собой поближе — возможно, что-то о себе ты узнаешь впервые.</p><p>В природе не существует «чистых» типов, все мы — сложное сплетение разных граней. Поэтому на любой из вопросов ты можешь выбрать <strong>один или сразу два</strong> варианта ответа. Если передумаешь, свой выбор всегда можно легко поменять.</p><p>Будь искренним с собой, и зеркало покажет твою настоящую суть.</p><button class="continue-btn" id="start-btn">ПРОДОЛЖИТЬ</button></div></div></div>
