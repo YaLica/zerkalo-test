@@ -115,7 +115,7 @@ html, body {
 }
 
 .rules-plate h2 { font-size: clamp(18px, 2.5vw, 32px); font-family: system-ui, sans-serif; margin-bottom: 8px; }
-.rules-plate p { font-size: clamp(15px, 1.5vw, 18px); line-height: 1.5; font-family: system-ui, sans-serif; }
+.rules-plate p { font-size: clamp(13px, 1.5vw, 18px); line-height: 1.5; font-family: system-ui, sans-serif; }
 
 .continue-btn {
   margin-top: 15px;
@@ -309,6 +309,25 @@ html, body {
 .review-author { font-size: 11px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-family: system-ui, sans-serif; }
 .review-text { font-size: clamp(13px, 1.4vw, 16px); color: #e0e0e0; line-height: 1.5; font-family: system-ui, sans-serif; }
 </style>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(110291693, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110291693" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
 </head>
 <body>
 
@@ -418,7 +437,7 @@ for (var i = 0; i < 16; i++) { answerQueues.push([]); }
 var scores = { choleric: 0, sanguine: 0, phlegmatic: 0, melancholic: 0 };
 var currentScreen = 0;
 var waitingTimer = null;
-var hasSeenResult = false; // НОВАЯ ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ (память)
+var hasSeenResult = false; 
 
 var DEFAULT_TEMPLATE = "Зеркало увидело в тебе уникальное сочетание граней. Ты — сложная и интересная личность, которую не уложить в рамки.";
 
@@ -458,7 +477,7 @@ function goTo(index) {
       if (currentScreen === 20) {
         document.getElementById('waiting-video').pause();
         buildResultText();
-        hasSeenResult = true; // СТАВИМ ГАЛОЧКУ, ЧТО РЕЗУЛЬТАТ УЖЕ ПОЛУЧЕН
+        hasSeenResult = true; 
         goTo(21);
       }
     }, delay);
@@ -488,13 +507,27 @@ var introVideo = document.getElementById('intro-video');
 introVideo.addEventListener('ended', function() { goTo(1); });
 introVideo.play().catch(function() { document.getElementById('screen-0').addEventListener('click', function() { goTo(1); }, { once: true }); });
 
-document.getElementById('start-btn').addEventListener('click', function(e) { e.stopPropagation(); goTo(2); });
+// ЦЕЛЬ 1: Нажали ПРОДОЛЖИТЬ
+document.getElementById('start-btn').addEventListener('click', function(e) { 
+  e.stopPropagation(); 
+  ym(110291693, 'reachGoal', 'start_test'); // Отправка в Метрику
+  goTo(2); 
+});
 
 var mirrorBtn   = document.getElementById('mirror-btn');
 var mirrorLabel = document.getElementById('mirror-label');
 function triggerMirror() { mirrorLabel.classList.add('hidden'); setTimeout(function() { goTo(3); }, 350); }
 var mirrorFired = false;
-function fireMirror(e) { e.stopPropagation(); if (mirrorFired) return; mirrorFired = true; triggerMirror(); }
+
+// ЦЕЛЬ 2: Нажали на Зеркало
+function fireMirror(e) { 
+  e.stopPropagation(); 
+  if (mirrorFired) return; 
+  mirrorFired = true; 
+  ym(110291693, 'reachGoal', 'mirror_click'); // Отправка в Метрику
+  triggerMirror(); 
+}
+
 mirrorBtn.addEventListener('pointerup', fireMirror);
 mirrorBtn.addEventListener('click', fireMirror);
 
@@ -629,17 +662,19 @@ for (var qs = 0; qs < questionScreens.length; qs++) {
   })(questionScreens[qs]);
 }
 
-// ОБНОВЛЕННАЯ КНОПКА С ПРОВЕРКОЙ ГАЛОЧКИ
+// ЦЕЛЬ 3: Нажали "Получить результат" (дошли до конца)
 document.getElementById('get-result-btn').addEventListener('click', function() {
   if (window._emptyRun === true) { 
     goTo(3); 
     return; 
   }
   
+  ym(110291693, 'reachGoal', 'get_result'); // Отправка в Метрику
+  
   if (hasSeenResult) {
-    goTo(21); // Если уже смотрел, кидаем сразу на текст
+    goTo(21);
   } else {
-    goTo(20); // Если первый раз, показываем видео
+    goTo(20);
   }
 });
 
@@ -657,12 +692,15 @@ makeSwipeable(document.getElementById('screen-23'), null, function() { goTo(22);
 makeSwipeable(document.getElementById('screen-22'), null, function() { goTo(21); });
 makeSwipeable(document.getElementById('screen-21'), null, function() { goTo(19); });
 
-// Отправка отзыва
+// ЦЕЛЬ 4: Успешно отправили отзыв
 document.getElementById('review-send-btn').addEventListener('click', function() {
   var name = document.getElementById('review-name').value.trim();
   var text = document.getElementById('review-textarea').value.trim();
   
+  // Если поле отзыва пустое - не засчитываем и не отправляем
   if (!text) return;
+
+  ym(110291693, 'reachGoal', 'send_review'); // Отправка в Метрику
 
   document.getElementById('review-prompt').style.display = 'none';
   document.getElementById('review-name').style.display = 'none';
