@@ -65,17 +65,17 @@ box-shadow: 0 0 0 8px #222, 0 30px 80px rgba(0,0,0,0.8);
 position: absolute;
 top: 14px;
 right: 14px;
-width: 44px;
+width: 42px;
 height: 44px;
 background: rgba(25, 10, 40, 0.75);
 backdrop-filter: blur(8px);
 -webkit-backdrop-filter: blur(8px);
-border: 1px solid rgba(255, 255, 255, 0.3);
+border: 1px solid rgba(255, 255, 255, 0.35);
 border-radius: 12px;
 display: flex;
 align-items: center;
 justify-content: center;
-z-index: 99999;
+z-index: 999999;
 cursor: pointer;
 opacity: 0;
 pointer-events: none;
@@ -390,7 +390,7 @@ webvisor:true
 <div class="screen" id="screen-0"><video id="intro-video" class="video-screen" src="beginning.mp4" autoplay muted playsinline preload="auto"></video></div>
 
 <!-- ЭКРАН 1 -->
-<div class="screen" id="screen-1"><img class="bg" src="background.png" alt="bg" /><div class="rules-plate-container"><div class="rules-plate"><h2>Здравствуй, путник!</h2><p>Приглашаем тебя заглянуть в своё отражение и узнать, какая стихия преобладает в твоём темпераменте. Мы предлагаем тебе ответить на 16 вопросов и познакомиться с собой поближе — возможно, что-то о себе ты узнаешь впервые.</p><p>В природе не существует «чистых» типов, все мы — сложное сплетение разных граней. Поэтому на любой из вопросов ты можете выбрать <strong>один или сразу два</strong> варианта ответа. Если передумаешь, свой выбор всегда можно легко поменять.</p><p>Будь искренним с собой, и зеркало покажет твою настоящую суть.</p><button class="continue-btn" id="start-btn">ПРОДОЛЖИТЬ</button></div></div></div>
+<div class="screen" id="screen-1"><img class="bg" src="background.png" alt="bg" /><div class="rules-plate-container"><div class="rules-plate"><h2>Здравствуй, путник!</h2><p>Приглашаем тебя заглянуть в своё отражение и узнать, какая стихия преобладает в твоём темпераменте. Мы предлагаем тебе ответить на 16 вопросов и познакомиться с собой поближе — возможно, что-то о себе ты узнаешь впервые.</p><p>В природе не существует «чистых» типов, все мы — сложное сплетение разных граней. Поэтому на любой из вопросов ты можешь выбрать <strong>один или сразу два</strong> варианта ответа. Если передумаешь, свой выбор всегда можно легко поменять.</p><p>Будь искренним с собой, и зеркало покажет твою настоящую суть.</p><button class="continue-btn" id="start-btn">ПРОДОЛЖИТЬ</button></div></div></div>
 
 <!-- ЭКРАН 2 -->
 <div class="screen" id="screen-2"><img class="bg" src="background.png" alt="bg" /><div class="mirror-wrap"><img id="mirror-btn" src="mirror_button.png" alt="Начать" draggable="false" /></div><div class="mirror-label" id="mirror-label">ЗАГЛЯНУТЬ В ЗЕРКАЛО</div></div>
@@ -464,7 +464,7 @@ webvisor:true
 
 <script src="data/texts.js"></script>
 <script>
-// ВАЖНО: АДРЕС СЕРВЕРА ДЛЯ СВЯЗИ С БАЗОЙ
+// ПОДКЛЮЧЕНИЕ К СЕРВЕРУ
 var API_URL = 'https://rental-scarcity-bagging.ngrok-free.dev';
 
 var TOTAL_SCREENS = 24;
@@ -505,12 +505,14 @@ document.getElementById('waiting-video').pause();
 currentScreen = index;
 carousel.style.transform = 'translateX(-' + (index * (100 / TOTAL_SCREENS)) + '%)';
 
-// Управляем видимостью кнопки «Поделиться»
+// Показываем плавающую кнопку «Поделиться» со 2-го экрана (index > 0)
 var shareBtn = document.getElementById('share-btn-fixed');
-if (index > 0) {
-    shareBtn.classList.add('visible');
-} else {
-    shareBtn.classList.remove('visible');
+if (shareBtn) {
+    if (index > 0) {
+        shareBtn.classList.add('visible');
+    } else {
+        shareBtn.classList.remove('visible');
+    }
 }
 
 if (index === 20) {
@@ -531,6 +533,7 @@ goTo(21);
 }
 
 function makeSwipeable(el, onLeft, onRight) {
+if (!el) return;
 var sx = 0, sy = 0, active = false;
 function onStart(x, y) { sx = x; sy = y; active = true; }
 function onEnd(x, y) {
@@ -555,7 +558,7 @@ introVideo.play().catch(function() { document.getElementById('screen-0').addEven
 
 document.getElementById('start-btn').addEventListener('click', function(e) {
 e.stopPropagation();
-ym(110291693, 'reachGoal', 'start_test');
+if (typeof ym !== 'undefined') ym(110291693, 'reachGoal', 'start_test');
 goTo(2);
 });
 
@@ -568,7 +571,7 @@ function fireMirror(e) {
 e.stopPropagation();
 if (mirrorFired) return;
 mirrorFired = true;
-ym(110291693, 'reachGoal', 'mirror_click');
+if (typeof ym !== 'undefined') ym(110291693, 'reachGoal', 'mirror_click');
 triggerMirror();
 }
 
@@ -708,14 +711,14 @@ if (screenIndex === 18) { buildScoresTable(); goTo(19); } else { goTo(screenInde
 
 document.getElementById('get-result-btn').addEventListener('click', function() {
 if (window._emptyRun === true) { goTo(3); return; }
-ym(110291693, 'reachGoal', 'get_result');
+if (typeof ym !== 'undefined') ym(110291693, 'reachGoal', 'get_result');
 if (hasSeenResult) { goTo(21); } else { goTo(20); }
 });
 
-// ФУНКЦИЯ «ПОДЕЛИТЬСЯ» (УНИВЕРСАЛЬНАЯ ДЛЯ ПК И ТЕЛЕФОНОВ)
+// ФУНКЦИЯ «ПОДЕЛИТЬСЯ»
 function doShare(e) {
     if (e) e.stopPropagation();
-    ym(110291693, 'reachGoal', 'share_click');
+    if (typeof ym !== 'undefined') ym(110291693, 'reachGoal', 'share_click');
     var currentUrl = window.location.href;
 
     if (navigator.share) {
@@ -725,10 +728,9 @@ function doShare(e) {
             url: currentUrl
         }).catch(function() {});
     } else {
-        // Запасной вариант для компьютеров
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(currentUrl).then(function() {
-                alert('Ссылка на тест скопирована в буфер обмена! 🔗');
+                alert('Ссылка на тест скопирована! 🔗');
             }).catch(function() {
                 prompt('Скопируй ссылку на тест:', currentUrl);
             });
@@ -738,18 +740,18 @@ function doShare(e) {
     }
 }
 
-// Навигация отзывов и подгрузка с сервера
+// Загрузка одобренных отзывов с сервера
 async function loadReviews() {
   var list = document.getElementById('reviews-list');
   list.innerHTML = '<div class="reviews-loading">Связь с зеркалом... загрузка отзывов ⏳</div>';
 
   try {
-    let response = await fetch(API_URL + '/api/reviews', {
+    let response = await fetch(API_URL + '/api/reviews?ngrok-skip-browser-warning=true', {
         headers: { 'ngrok-skip-browser-warning': 'true' }
     });
     let loadedReviews = await response.json();
     
-    var approvedReviews = loadedReviews.filter(function(item) {
+    let approvedReviews = loadedReviews.filter(function(item) {
         return item.status === 'approved';
     });
 
@@ -795,7 +797,7 @@ document.getElementById('go-to-reviews-btn').addEventListener('click', function(
 document.getElementById('go-to-reviews-btn').addEventListener('touchend', function(e) { e.preventDefault(); loadReviews(); goTo(23); });
 
 document.getElementById('back-to-review-btn').addEventListener('click', function() { goTo(22); });
-document.getElementById('back-to-review-btn').addEventListener('touchend', function(e) { e.preventDefault(); loadReviews(); goTo(23); });
+document.getElementById('back-to-review-btn').addEventListener('touchend', function(e) { e.preventDefault(); goTo(22); });
 
 makeSwipeable(document.getElementById('screen-23'), null, function() { goTo(22); });
 makeSwipeable(document.getElementById('screen-22'), null, function() { goTo(21); });
@@ -803,7 +805,7 @@ makeSwipeable(document.getElementById('screen-21'), null, function() { goTo(19);
 
 // Отправка отзыва
 document.getElementById('review-send-btn').addEventListener('click', async function() {
-  ym(110291693, 'reachGoal', 'send_review');
+  if (typeof ym !== 'undefined') ym(110291693, 'reachGoal', 'send_review');
   
   var author = document.getElementById('review-name').value.trim();
   var text = document.getElementById('review-textarea').value.trim();
@@ -818,17 +820,15 @@ document.getElementById('review-send-btn').addEventListener('click', async funct
   btn.disabled = true;
 
   try {
-      let response = await fetch(API_URL + '/api/reviews', {
+      let response = await fetch(API_URL + '/api/reviews?ngrok-skip-browser-warning=true', {
           method: 'POST',
           headers: { 
               'Content-Type': 'application/json',
               'ngrok-skip-browser-warning': 'true'
           },
           body: JSON.stringify({
-              site_id: 'zerkalo_test',
               author_name: author,
-              text: text,
-              rating: 5
+              text: text
           })
       });
 
