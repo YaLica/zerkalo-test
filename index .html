@@ -60,6 +60,46 @@ box-shadow: 0 0 0 8px #222, 0 30px 80px rgba(0,0,0,0.8);
 .phone-frame { width: 100%; height: 100%; }
 }
 
+/* ФИКСИРОВАННАЯ КНОПКА «ПОДЕЛИТЬСЯ» В ВЕРХНЕМ ПРАВОМ УГЛУ */
+.share-btn-fixed {
+position: absolute;
+top: 14px;
+right: 14px;
+width: 40px;
+height: 40px;
+background: rgba(20, 10, 30, 0.65);
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
+border: 1px solid rgba(255, 255, 255, 0.25);
+border-radius: 12px;
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 99;
+cursor: pointer;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.4s ease, transform 0.1s ease;
+animation: share-pulse 2s infinite ease-in-out;
+-webkit-tap-highlight-color: transparent;
+touch-action: manipulation;
+}
+
+.share-btn-fixed.visible {
+opacity: 1;
+pointer-events: auto;
+}
+
+.share-btn-fixed:active {
+transform: scale(0.9);
+}
+
+@keyframes share-pulse {
+0% { box-shadow: 0 0 0 0 rgba(180, 100, 255, 0.5); }
+70% { box-shadow: 0 0 0 10px rgba(180, 100, 255, 0); }
+100% { box-shadow: 0 0 0 0 rgba(180, 100, 255, 0); }
+}
+
 .carousel {
 display: flex;
 height: 100%;
@@ -226,19 +266,8 @@ flex-direction: column; align-items: center; justify-content: center; padding: 2
 #result-text {
 max-width: 600px; color: #fff; font-size: clamp(13px, 1.4vw, 16px);
 line-height: 1.8; text-align: center; padding: 20px; font-family: system-ui, sans-serif;
-background: rgba(40, 15, 5, 0.75); border-radius: 16px; margin-bottom: 130px;
+background: rgba(40, 15, 5, 0.75); border-radius: 16px; margin-bottom: 80px;
 }
-
-/* ======== КНОПКИ НА ЭКРАНЕ РЕЗУЛЬТАТА ======== */
-#share-plate {
-position: absolute; bottom: 75px; left: 50%; transform: translateX(-50%);
-background: linear-gradient(135deg, #8a2be2, #4b0082); color: #fff; text-align: center;
-padding: 11px 36px; border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px);
-letter-spacing: 2px; cursor: pointer; z-index: 10; user-select: none;
-font-family: system-ui, sans-serif; white-space: nowrap; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-box-shadow: 0 4px 15px rgba(138,43,226,0.4); border: 1px solid rgba(255,255,255,0.2);
-}
-#share-plate:active { opacity: 0.75; transform: translateX(-50%) scale(0.96); }
 
 #review-plate {
 position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
@@ -344,6 +373,18 @@ webvisor:true
 <body>
 
 <div class="phone-frame">
+
+<!-- КНОПКА «ПОДЕЛИТЬСЯ» ВЕРХНИЙ ПРАВЫЙ УГОЛ (Незаконченный треугольник) -->
+<div id="share-btn-fixed" class="share-btn-fixed" title="Поделиться">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"></circle>
+        <circle cx="6" cy="12" r="3"></circle>
+        <circle cx="18" cy="19" r="3"></circle>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    </svg>
+</div>
+
 <div class="carousel" id="carousel">
 
 <!-- ЭКРАН 0 -->
@@ -379,16 +420,8 @@ webvisor:true
 <!-- ЭКРАН 20 -->
 <div class="screen" id="screen-20"><video id="waiting-video" class="video-screen" src="waiting.mp4" playsinline loop preload="auto"></video><div class="waiting-plate">СОБИРАЕМ ГРАНИ ТВОЕГО ОТРАЖЕНИЯ</div></div>
 
-<!-- ЭКРАН 21: Результат -->
-<div class="screen" id="screen-21">
-    <img class="bg" src="background.png" alt="bg" />
-    <div class="result-content">
-        <div id="result-text"></div>
-    </div>
-    <!-- Кнопки действий -->
-    <div id="share-plate">✨ ПОДЕЛИТЬСЯ</div>
-    <div id="review-plate">ОСТАВИТЬ ОТЗЫВ</div>
-</div>
+<!-- ЭКРАН 21 -->
+<div class="screen" id="screen-21"><img class="bg" src="background.png" alt="bg" /><div class="result-content"><div id="result-text"></div></div><div id="review-plate">ОСТАВИТЬ ОТЗЫВ</div></div>
 
 <!-- ЭКРАН 22: Написать отзыв -->
 <div class="screen" id="screen-22">
@@ -432,8 +465,8 @@ webvisor:true
 
 <script src="data/texts.js"></script>
 <script>
-// ПОДКЛЮЧЕНИЕ К ВАШЕМУ СЕРВЕРУ NGROK
-var API_URL = 'https://rental-scarcity-bagging.ngrok-free.dev';
+// ВЕРНУЛИ ЛОКАЛЬНЫЙ БЫСТРЫЙ И ВАШ АДРЕС БЕЗ ТОРМОЗОВ NGROK
+var API_URL = 'http://127.0.0.1:8000';
 
 var TOTAL_SCREENS = 24;
 
@@ -472,6 +505,14 @@ document.getElementById('waiting-video').pause();
 }
 currentScreen = index;
 carousel.style.transform = 'translateX(-' + (index * (100 / TOTAL_SCREENS)) + '%)';
+
+// Управляем видимостью плавающей кнопки Поделиться
+var shareBtn = document.getElementById('share-btn-fixed');
+if (index > 0) {
+    shareBtn.classList.add('visible');
+} else {
+    shareBtn.classList.remove('visible');
+}
 
 if (index === 20) {
 var wv = document.getElementById('waiting-video');
@@ -672,29 +713,30 @@ ym(110291693, 'reachGoal', 'get_result');
 if (hasSeenResult) { goTo(21); } else { goTo(20); }
 });
 
-// КНОПКА «ПОДЕЛИТЬСЯ»
-function handleShare() {
+// КЛИК ПО ПОДЕЛИКЕ
+function doShare(e) {
+    if (e) e.stopPropagation();
     ym(110291693, 'reachGoal', 'share_click');
     var shareData = {
         title: 'Загляни в зеркало 🪞',
-        text: 'Я прошёл тест «Загляни в зеркало» и узнал свой психотип! Попробуй и ты:',
+        text: 'Узнай, какая стихия преобладает в твоём темпераменте:',
         url: window.location.href
     };
 
     if (navigator.share) {
-        navigator.share(shareData).catch(function(err) {});
+        navigator.share(shareData).catch(function() {});
     } else {
-        // Запасной вариант для ПК — копирование ссылки
         navigator.clipboard.writeText(window.location.href).then(function() {
-            alert('Ссылка на тест скопирована! 🔗');
+            alert('Ссылка скопирована! ✨');
         }).catch(function() {
-            alert('Ссылка на тест: ' + window.location.href);
+            alert('Ссылка: ' + window.location.href);
         });
     }
 }
 
-document.getElementById('share-plate').addEventListener('click', handleShare);
-document.getElementById('share-plate').addEventListener('touchend', function(e) { e.preventDefault(); handleShare(); });
+var shareFixedBtn = document.getElementById('share-btn-fixed');
+shareFixedBtn.addEventListener('click', doShare);
+shareFixedBtn.addEventListener('touchend', function(e) { e.preventDefault(); doShare(e); });
 
 // Навигация отзывов и подгрузка с сервера
 async function loadReviews() {
@@ -702,13 +744,10 @@ async function loadReviews() {
   list.innerHTML = '<div class="reviews-loading">Связь с зеркалом... загрузка отзывов ⏳</div>';
 
   try {
-    let response = await fetch(`${API_URL}/api/reviews`, {
-        headers: { 'ngrok-skip-browser-warning': 'true' }
-    });
+    let response = await fetch(API_URL + '/api/reviews');
     let loadedReviews = await response.json();
     
-    // ОСТАВЛЯЕМ ТОЛЬКО ТЕ, КОТОРЫЕ ОДОБРИЛ АДМИН
-    let approvedReviews = loadedReviews.filter(function(item) {
+    var approvedReviews = loadedReviews.filter(function(item) {
         return item.status === 'approved';
     });
 
@@ -719,7 +758,6 @@ async function loadReviews() {
       return;
     }
 
-    // Переворачиваем массив, чтобы свежие отзывы были сверху
     approvedReviews.reverse().forEach(function(item) {
       var card = document.createElement('div');
       card.className = 'review-card';
@@ -755,18 +793,18 @@ document.getElementById('go-to-reviews-btn').addEventListener('click', function(
 document.getElementById('go-to-reviews-btn').addEventListener('touchend', function(e) { e.preventDefault(); loadReviews(); goTo(23); });
 
 document.getElementById('back-to-review-btn').addEventListener('click', function() { goTo(22); });
-document.getElementById('back-to-review-btn').addEventListener('touchend', function(e) { e.preventDefault(); goTo(22); });
+document.getElementById('back-to-review-btn').addEventListener('touchend', function(e) { e.preventDefault(); loadReviews(); goTo(23); });
 
 makeSwipeable(document.getElementById('screen-23'), null, function() { goTo(22); });
 makeSwipeable(document.getElementById('screen-22'), null, function() { goTo(21); });
 makeSwipeable(document.getElementById('screen-21'), null, function() { goTo(19); });
 
-// Отправка отзыва напрямую в вашу базу данных
+// Отправка отзыва
 document.getElementById('review-send-btn').addEventListener('click', async function() {
   ym(110291693, 'reachGoal', 'send_review');
   
-  var author = document.getElementById('review-name').value.trim();
-  var text = document.getElementById('review-textarea').value.trim();
+  var author = document.getElementById('review-name').value;
+  var text = document.getElementById('review-textarea').value;
 
   if (!author || !text) {
       alert("Пожалуйста, напиши своё имя и отзыв!");
@@ -778,12 +816,9 @@ document.getElementById('review-send-btn').addEventListener('click', async funct
   btn.disabled = true;
 
   try {
-      let response = await fetch(`${API_URL}/api/reviews`, {
+      let response = await fetch(API_URL + '/api/reviews', {
           method: 'POST',
-          headers: { 
-              'Content-Type': 'application/json',
-              'ngrok-skip-browser-warning': 'true'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
               site_id: 'zerkalo_test',
               author_name: author,
