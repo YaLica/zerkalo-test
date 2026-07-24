@@ -65,21 +65,21 @@ box-shadow: 0 0 0 8px #222, 0 30px 80px rgba(0,0,0,0.8);
 position: absolute;
 top: 14px;
 right: 14px;
-width: 40px;
-height: 40px;
-background: rgba(20, 10, 30, 0.65);
+width: 44px;
+height: 44px;
+background: rgba(25, 10, 40, 0.75);
 backdrop-filter: blur(8px);
 -webkit-backdrop-filter: blur(8px);
-border: 1px solid rgba(255, 255, 255, 0.25);
+border: 1px solid rgba(255, 255, 255, 0.3);
 border-radius: 12px;
 display: flex;
 align-items: center;
 justify-content: center;
-z-index: 99;
+z-index: 99999;
 cursor: pointer;
 opacity: 0;
 pointer-events: none;
-transition: opacity 0.4s ease, transform 0.1s ease;
+transition: opacity 0.4s ease, transform 0.15s ease;
 animation: share-pulse 2s infinite ease-in-out;
 -webkit-tap-highlight-color: transparent;
 touch-action: manipulation;
@@ -95,8 +95,8 @@ transform: scale(0.9);
 }
 
 @keyframes share-pulse {
-0% { box-shadow: 0 0 0 0 rgba(180, 100, 255, 0.5); }
-70% { box-shadow: 0 0 0 10px rgba(180, 100, 255, 0); }
+0% { box-shadow: 0 0 0 0 rgba(180, 100, 255, 0.6); }
+70% { box-shadow: 0 0 0 12px rgba(180, 100, 255, 0); }
 100% { box-shadow: 0 0 0 0 rgba(180, 100, 255, 0); }
 }
 
@@ -291,7 +291,6 @@ color: #ffffff; font-size: clamp(14px, 1.6vw, 18px); text-align: center;
 line-height: 1.5; font-family: system-ui, sans-serif; margin-bottom: 16px;
 }
 
-/* Поле для имени */
 #review-name {
 width: 100%; background: rgba(40, 15, 5, 0.75); border: 1px solid rgba(255,255,255,0.3);
 border-radius: 12px; color: #fff; font-size: clamp(14px, 1.5vw, 18px);
@@ -374,9 +373,9 @@ webvisor:true
 
 <div class="phone-frame">
 
-<!-- КНОПКА «ПОДЕЛИТЬСЯ» ВЕРХНИЙ ПРАВЫЙ УГОЛ (Незаконченный треугольник) -->
-<div id="share-btn-fixed" class="share-btn-fixed" title="Поделиться">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<!-- КНОПКА ПОДЕЛИТЬСЯ (ИКОНКА НЕЗАКОНЧЕННЫЙ ТРЕУГОЛЬНИК) -->
+<div id="share-btn-fixed" class="share-btn-fixed" onclick="doShare(event)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="18" cy="5" r="3"></circle>
         <circle cx="6" cy="12" r="3"></circle>
         <circle cx="18" cy="19" r="3"></circle>
@@ -465,8 +464,8 @@ webvisor:true
 
 <script src="data/texts.js"></script>
 <script>
-// ВЕРНУЛИ ЛОКАЛЬНЫЙ БЫСТРЫЙ И ВАШ АДРЕС БЕЗ ТОРМОЗОВ NGROK
-var API_URL = 'http://127.0.0.1:8000';
+// ВАЖНО: АДРЕС СЕРВЕРА ДЛЯ СВЯЗИ С БАЗОЙ
+var API_URL = 'https://rental-scarcity-bagging.ngrok-free.dev';
 
 var TOTAL_SCREENS = 24;
 
@@ -506,7 +505,7 @@ document.getElementById('waiting-video').pause();
 currentScreen = index;
 carousel.style.transform = 'translateX(-' + (index * (100 / TOTAL_SCREENS)) + '%)';
 
-// Управляем видимостью плавающей кнопки Поделиться
+// Управляем видимостью кнопки «Поделиться»
 var shareBtn = document.getElementById('share-btn-fixed');
 if (index > 0) {
     shareBtn.classList.add('visible');
@@ -713,30 +712,31 @@ ym(110291693, 'reachGoal', 'get_result');
 if (hasSeenResult) { goTo(21); } else { goTo(20); }
 });
 
-// КЛИК ПО ПОДЕЛИКЕ
+// ФУНКЦИЯ «ПОДЕЛИТЬСЯ» (УНИВЕРСАЛЬНАЯ ДЛЯ ПК И ТЕЛЕФОНОВ)
 function doShare(e) {
     if (e) e.stopPropagation();
     ym(110291693, 'reachGoal', 'share_click');
-    var shareData = {
-        title: 'Загляни в зеркало 🪞',
-        text: 'Узнай, какая стихия преобладает в твоём темпераменте:',
-        url: window.location.href
-    };
+    var currentUrl = window.location.href;
 
     if (navigator.share) {
-        navigator.share(shareData).catch(function() {});
+        navigator.share({
+            title: 'Загляни в зеркало 🪞',
+            text: 'Узнай, какая стихия преобладает в твоём темпераменте:',
+            url: currentUrl
+        }).catch(function() {});
     } else {
-        navigator.clipboard.writeText(window.location.href).then(function() {
-            alert('Ссылка скопирована! ✨');
-        }).catch(function() {
-            alert('Ссылка: ' + window.location.href);
-        });
+        // Запасной вариант для компьютеров
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(currentUrl).then(function() {
+                alert('Ссылка на тест скопирована в буфер обмена! 🔗');
+            }).catch(function() {
+                prompt('Скопируй ссылку на тест:', currentUrl);
+            });
+        } else {
+            prompt('Скопируй ссылку на тест:', currentUrl);
+        }
     }
 }
-
-var shareFixedBtn = document.getElementById('share-btn-fixed');
-shareFixedBtn.addEventListener('click', doShare);
-shareFixedBtn.addEventListener('touchend', function(e) { e.preventDefault(); doShare(e); });
 
 // Навигация отзывов и подгрузка с сервера
 async function loadReviews() {
@@ -744,7 +744,9 @@ async function loadReviews() {
   list.innerHTML = '<div class="reviews-loading">Связь с зеркалом... загрузка отзывов ⏳</div>';
 
   try {
-    let response = await fetch(API_URL + '/api/reviews');
+    let response = await fetch(API_URL + '/api/reviews', {
+        headers: { 'ngrok-skip-browser-warning': 'true' }
+    });
     let loadedReviews = await response.json();
     
     var approvedReviews = loadedReviews.filter(function(item) {
@@ -803,8 +805,8 @@ makeSwipeable(document.getElementById('screen-21'), null, function() { goTo(19);
 document.getElementById('review-send-btn').addEventListener('click', async function() {
   ym(110291693, 'reachGoal', 'send_review');
   
-  var author = document.getElementById('review-name').value;
-  var text = document.getElementById('review-textarea').value;
+  var author = document.getElementById('review-name').value.trim();
+  var text = document.getElementById('review-textarea').value.trim();
 
   if (!author || !text) {
       alert("Пожалуйста, напиши своё имя и отзыв!");
@@ -818,7 +820,10 @@ document.getElementById('review-send-btn').addEventListener('click', async funct
   try {
       let response = await fetch(API_URL + '/api/reviews', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+              'Content-Type': 'application/json',
+              'ngrok-skip-browser-warning': 'true'
+          },
           body: JSON.stringify({
               site_id: 'zerkalo_test',
               author_name: author,
