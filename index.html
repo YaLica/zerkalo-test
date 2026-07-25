@@ -415,7 +415,7 @@ html, body {
 <script src="data/texts.js"></script>
 <script>
 var TOTAL_SCREENS = 24;
-var SCRIPT_URL = "https://functions.yandexcloud.net/d4egnqnoqssi888nb2ga";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsIFzDPc6NgOWSDSzBOp6O8QBgMxBfFMDxdA3Cpe5WaDn30n5NX_itgQxgvG3_CpU-Og/exec";
 
 var answerQueues = [];
 for (var i = 0; i < 16; i++) { answerQueues.push([]); }
@@ -661,7 +661,6 @@ function loadReviews() {
     .then(function(response) { return response.json(); })
     .then(function(data) {
       list.innerHTML = '';
-      if (!Array.isArray(data)) { data = data.reviews || []; }
       if (data.length === 0) {
         list.innerHTML = '<div class="reviews-loading">Пока нет отзывов. Будь первым! 🤍</div>';
         return;
@@ -720,16 +719,12 @@ document.getElementById('review-send-btn').addEventListener('click', function() 
   btn.textContent = 'ОТПРАВЛЯЕМ...';
   btn.style.pointerEvents = 'none';
 
-  // Отправляем в Yandex Cloud Function
+  // Отправляем в Google Таблицу
   fetch(SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    mode: 'no-cors',
     body: JSON.stringify({ name: name, text: text })
-  }).then(function(response) {
-    if (!response.ok) throw new Error('bad status');
-    return response.json();
-  }).then(function(result) {
-    if (!result.ok) throw new Error('not ok');
+  }).then(function() {
     document.getElementById('review-prompt').style.display = 'none';
     document.getElementById('review-name').style.display = 'none';
     document.getElementById('review-textarea').style.display = 'none';
