@@ -278,13 +278,16 @@ html, body {
 #review-send-btn:active { opacity: 0.75; transform: scale(0.96); }
 
 #go-to-reviews-btn {
-  padding: 12px 30px; margin-top: 12px; background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px); cursor: pointer;
+  padding: 12px 30px; margin-top: 12px; 
+  background: rgba(65, 30, 15, 0.7); /* Полупрозрачный коричневый фон */
+  color: #e0b876; /* Премиальный золотой цвет текста */
+  border: 1px solid rgba(224, 184, 118, 0.3); /* Золотистая полупрозрачная рамочка */
+  backdrop-filter: blur(4px);
+  border-radius: 30px; font-size: clamp(12px, 1.3vw, 15px); font-weight: 600; cursor: pointer;
   font-family: system-ui, sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-  width: 100%; transition: transform 0.1s ease;
+  width: 100%; transition: transform 0.1s ease, background 0.2s ease;
 }
-#go-to-reviews-btn:active { opacity: 0.75; transform: scale(0.96); }
+#go-to-reviews-btn:active { transform: scale(0.96); background: rgba(85, 45, 25, 0.85); }
 
 #review-thanks {
   display: none; color: #4cff4c; font-size: clamp(15px, 1.6vw, 19px);
@@ -310,6 +313,46 @@ html, body {
 .review-text { font-size: clamp(13px, 1.4vw, 16px); color: #e0e0e0; line-height: 1.5; font-family: system-ui, sans-serif; }
 .review-reply { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: clamp(12px, 1.3vw, 14px); color: #e5b078; font-family: system-ui, sans-serif; }
 .reviews-loading { text-align: center; color: #fff; font-family: system-ui, sans-serif; margin-top: 20px; font-size: 14px; }
+
+/* ======== КНОПКА ПОДЕЛИТЬСЯ ======== */
+#share-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 42px; height: 42px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  z-index: 100;
+  display: none;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.1s ease, background 0.2s ease;
+}
+#share-btn.visible { display: flex; }
+#share-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.2); }
+#share-btn svg { width: 22px; height: 22px; stroke: rgba(255,255,255,0.9); stroke-width: 2; fill: none; }
+
+/* ======== КНОПКИ "УЗНАТЬ БОЛЬШЕ" ======== */
+.more-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  text-decoration: none; text-align: center;
+  background: rgba(65, 30, 15, 0.7); /* Полупрозрачный коричневый */
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(224, 184, 118, 0.3);
+  color: #e0b876; /* Премиальный золотой цвет */
+  padding: 12px 20px; border-radius: 30px;
+  font-size: clamp(12px, 1.3vw, 15px); font-weight: 600; letter-spacing: 1px;
+  font-family: system-ui, sans-serif;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  margin-top: 10px; width: 100%;
+  transition: transform 0.1s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.more-btn:active { transform: scale(0.96); background: rgba(85, 45, 25, 0.85); }
+.tg-icon { width: 20px; height: 20px; flex-shrink: 0; fill: currentColor; }
 </style>
 
 <!-- Yandex.Metrika counter -->
@@ -334,6 +377,16 @@ html, body {
 <body>
 
 <div class="phone-frame">
+<!-- КНОПКА ПОДЕЛИТЬСЯ -->
+<div id="share-btn" title="Поделиться">
+  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="18" cy="5" r="3"></circle>
+    <circle cx="6" cy="12" r="3"></circle>
+    <circle cx="18" cy="19" r="3"></circle>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+  </svg>
+</div>
 <div class="carousel" id="carousel">
 
   <!-- ЭКРАН 0 -->
@@ -394,6 +447,17 @@ html, body {
         
         <button id="review-send-btn">ОТПРАВИТЬ</button>
         <button id="go-to-reviews-btn">ЧИТАТЬ ОТЗЫВЫ</button>
+        
+        <!-- Кнопки со ссылками -->
+        <a class="more-btn" href="https://t.me/yalica_arch" target="_blank" rel="noopener" id="more-tg">
+          <svg class="tg-icon" viewBox="0 0 24 24">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.699 1.201-1.22 1.244-.107.009-.216.009-.32 0-1.07-.11-2.115-.815-3.13-1.485-1.28-.845-2.006-1.378-3.255-2.2-1.43-.941-.502-1.46.525-2.525.267-.276 4.912-4.498 5.002-4.882.011-.048.021-.227-.087-.312-.108-.084-.263-.058-.376-.032-.16.037-2.71 1.722-7.65 5.056-.723.498-1.377.742-1.966.726-.649-.018-1.899-.368-2.827-.671-.767-.25-1.375-.382-1.322-.806.027-.216.335-.44 1.05-.672C5.975 8.761 11.238 6.57 13.003 5.834c2.274-.95 2.748-1.116 3.195-1.124a1.761 1.761 0 0 1 .708 0z"/>
+          </svg>
+          УЗНАТЬ БОЛЬШЕ В Telegram
+        </a>
+        <a class="more-btn" href="https://max.ru/join/SHeDSkc09AkDRydwJrMw3pe-C46C1Za9g0erHNvG1Ys" target="_blank" rel="noopener" id="more-max">
+          УЗНАТЬ БОЛЬШЕ В МАХ
+        </a>
       </div>
     </div>
   </div>
@@ -759,6 +823,40 @@ if (reviewTextarea && charProgress && charCounter) {
     }
   });
 }
+
+// ======== КНОПКА ПОДЕЛИТЬСЯ ========
+var shareBtn = document.getElementById('share-btn');
+
+var _origGoTo = goTo;
+goTo = function(index) {
+  _origGoTo(index);
+  if (index >= 1) { shareBtn.classList.add('visible'); }
+  else { shareBtn.classList.remove('visible'); }
+};
+
+shareBtn.addEventListener('click', function() {
+  ym(110291693, 'reachGoal', 'share_click');
+  var shareData = {
+    title: 'Загляни в зеркало',
+    text: 'Узнай, какая стихия преобладает в твоём темпераменте',
+    url: window.location.href
+  };
+  if (navigator.share) {
+    navigator.share(shareData).catch(function(){});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+      alert('Ссылка скопирована! Поделись ей с друзьями ✨');
+    }).catch(function(){ alert(window.location.href); });
+  } else {
+    alert(window.location.href);
+  }
+});
+
+// метрика по кнопкам "узнать больше"
+var moreTg = document.getElementById('more-tg');
+var moreMax = document.getElementById('more-max');
+if (moreTg) moreTg.addEventListener('click', function(){ ym(110291693, 'reachGoal', 'more_tg'); });
+if (moreMax) moreMax.addEventListener('click', function(){ ym(110291693, 'reachGoal', 'more_max'); });
 </script>
 </body>
 </html>
